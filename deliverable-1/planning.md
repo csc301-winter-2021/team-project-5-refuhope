@@ -97,7 +97,7 @@ We will be using the MERN stack (React, Express, MongoDB, and Node.js). We will 
  
 For the application’s architecture, we decided to use the Model View Controller (MVC) design pattern. MVC is  the most common architectural pattern used for web applications since each of its high level components, namely Model, View, and Controller, have a natural mapping to the typical frontend, backend, and database components of most modern websites. At a high level, the interactions between the end users and our application can be described by the following diagram
 
-### Insert diagram
+![MVC](../diagrams/mvc.png)
 
 1. **View → Controller**
 
@@ -116,6 +116,12 @@ For the application’s architecture, we decided to use the Model View Controlle
     After receiving the updated data from the model, the controller further processes this to a format usable by the view component. Then, the newly updated and formatted data is sent back to the view. Finally, the view presents the updated data back to the user.
 
 For our objects and schema, we will use UML diagrams to express and organize the corresponding functionalities and attributes. For third party applications / APIs, we will be using MaterialUI for our React components. Our testing strategy will be automated, and we will use the Test-Driven Development (TDD) process as we work.
+
+**Mockup**
+
+Our mockup can be found [here](https://www.figma.com/proto/iEmV1F92QeE08YhtmHmbLp/RefuTalent-Mockup?node-id=0%3A3&scaling=scale-down). Note that this mockup was created following the MVP requirements specified in the project proposal document, as provided by the RefuHope team. When we showed this mockup to our project partner, however, they clarified that the project proposal document didn't entirely and accurately express their current needs. Fortunately, our project partners acted quickly, and finalized a new specification for the MVP. 
+
+In short, this mockup represents the set of functionalities that were initially specified, and is missing some of the requirements outlined by the new specification (that we received on Saturday, Feb 13).
 
 ---
 
@@ -195,7 +201,7 @@ In total, we had around 60 minutes of meeting time with our partner. Moving forw
 
 #### Q8: What artifacts will you use to self-organize? 
 
-To keep our team organzied and on schedule, our goal is to maintain a flexible method of task management with the help of a ticketing system. We considered options such as Github Issues and Zenhub for this, but ultimately decided on going with the Trello platform. Additionally, our team will make use of shared documents to keep track of any written tasks such as planning documents. Task prioritization depends on deadlines and partner meetings; for instance, completing the mockups was a top priority for the 2nd partner meeting to obtain feedback on the initial product design. 
+To keep our team organized and on schedule, our goal is to maintain a flexible method of task management with the help of a ticketing system. We considered options such as Github Issues and Zenhub for this, but ultimately decided on going with the Trello platform. Additionally, our team will make use of shared documents to keep track of any written tasks such as planning documents. Task prioritization depends on deadlines and partner meetings; for instance, completing the mockups was a top priority for the 2nd partner meeting to obtain feedback on the initial product design. 
 
 Thus far, tasks have been assigned based on team members’ skills and experiences. For example, we have two team members who have previous experience working with Figma, so naturally they took on the responsibility for creating the mockups for Deliverable 1. For other tasks such as completing the planning.md document, we divided the work equally (e.g. number of questions completed), based on team members' preferences and on a first-come, first-serve basis. Moving forward, we will keep a similar approach when dividing tasks, while also making use of a ticketing system. The status of a task will be deemed to be complete once it has met all project expectations, integrated any constructive feedback, and the work has been reviewed by at least one other team member. 
 
@@ -205,7 +211,7 @@ Thus far, tasks have been assigned based on team members’ skills and experienc
 
 **Communications**
 
-The expected frequency for communication within our team is to keep each other updated on a weekly basis. This includes updates on responsibilites, as well as completed tasks. We will be using a group chat for standard communication and Discord for meetings. In regards to partner communication, the expected frequency will be once every two weeks for meetings, which will be held using Google Meet (the platform of our partner's choice). For other communication, such as minor questions or clarifications outside of scheduled meeting times, we will use email. 
+The expected frequency for communication within our team is to keep each other updated on a weekly basis. This includes updates on responsibilities, as well as completed tasks. We will be using a group chat for standard communication and Discord for meetings. In regards to partner communication, the expected frequency will be once every two weeks for meetings, which will be held using Google Meet (the platform of our partner's choice). For other communication, such as minor questions or clarifications outside of scheduled meeting times, we will use email. 
 
 **Meetings**
 
@@ -213,7 +219,7 @@ Our team expects all members to hold themselves accountable for attending team m
 
 **Conflict Resolution**
 
-One scenario that we discussed was a situation where a team member is busy or unresponsive, with a deadline in the near future. We decided that in such situations, if an individual is not communicating with the rest of the team for 1-2 days, the first approach should be to try alternative methods of communication, such as email or direct messages on a different platofrm. If there is still no response after 2 days, we will contact the teaching team to report the situation and redelegate the remaining work. A student dropping the course near a deadline also would warrant a similar approach. 
+One scenario that we discussed was a situation where a team member is busy or unresponsive, with a deadline in the near future. We decided that in such situations, if an individual is not communicating with the rest of the team for 1-2 days, the first approach should be to try alternative methods of communication, such as email or direct messages on a different platform. If there is still no response after 2 days, we will contact the teaching team to report the situation and redelegate the remaining work. A student dropping the course near a deadline also would warrant a similar approach. 
 
 Similarly, there may be a scenario where a deadline was not met because a team member did not complete their share of the work. In this case, we agreed that a reasonable course of action would be to contact and apologize to the teaching team and the partner, and discuss options to extend the due date to accommodate for the missed work. 
 
