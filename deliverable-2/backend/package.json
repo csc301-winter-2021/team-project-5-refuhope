@@ -4,6 +4,7 @@
   "description": "Web application for refugees",
   "main": "./routes/index.js",
   "scripts": {
+    "start": "node ./routes/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
