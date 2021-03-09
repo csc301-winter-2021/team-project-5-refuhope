@@ -1,0 +1,10 @@
+{
+  "name": "refuhope",
+  "version": "1.0.0",
+  "description": "Web application for refugees",
+  "scripts": {
+    "postinstall": "npm install --prefix backend && npm install --prefix frontend && npm run build --prefix frontend"
+  },
+  "author": "",
+  "license": "ISC"
+}

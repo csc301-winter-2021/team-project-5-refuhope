@@ -1,5 +1,6 @@
 /* Main server for API functionality */
 const express = require("express");
+const path = require('path');
 
 // import our mongoose connection
 const mongoose = require("../db/mongoose");
@@ -23,6 +24,12 @@ app.get("/", (req, res) => {
 // TODO: Host Routes
 
 // TODO: Volunteer opportunity routes
+
+// UI routes
+app.use(express.static(path.join(path.resolve(__dirname, '../..'), './frontend/build')));
+app.get('*', (req, res) => {
+  res.sendFile(path.join(path.resolve(__dirname, '../..'), './frontend/build/index.html'));
+});
 
 // listen for requests
 app.listen(port, () => {
