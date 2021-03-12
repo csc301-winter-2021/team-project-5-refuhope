@@ -6,8 +6,8 @@
     padding:48px 10px 10px;
 }
 
-.postbox:before {
-    content: attr(data-title);
+.title {
+    display: inline;
     position: absolute;
     top: 0px;
     left: 0;
@@ -20,7 +20,7 @@
     text-transform: uppercase;
     font-family: Verdana;
     font-weight: bold;
-    font-size: 20pt;
+    font-size: 15pt;
 }
 
 .statusIR {

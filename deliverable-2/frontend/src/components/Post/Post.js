@@ -10,7 +10,7 @@ function Post() {
     const [schedule, setSchedule] = useState('')
     const [hours, setHours] = useState('')
     const [info, setInfo] = useState('')
-    var statusColor = "statusIR"
+    const [statusColor, setStatusColor] = useState('statusIR')
 
     function updateTitle(title) {
         setTitle(title)
@@ -19,7 +19,7 @@ function Post() {
     function updateStatus(status) {
         setStatus(status)
         if (status === "Matched") {
-            statusColor = "statusM"
+            setStatusColor("statusM")
         }
     }
 
@@ -48,7 +48,8 @@ function Post() {
     }
 
     return (
-        <div className="postbox" data-title = {title}>
+        <div className="postbox">
+            <div className="title"> {title} </div>
             <div className={statusColor}> 
                 {status}
             </div>
