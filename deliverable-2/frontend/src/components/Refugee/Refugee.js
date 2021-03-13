@@ -13,7 +13,8 @@ const DETAIL_LABELS = {
     location: "LOCATION",
     workType: "WORK TYPE",
     schedule: "SCHEDULE",
-    numWorkHours: "HOURS PER WEEK"
+    numWorkHours: "HOURS PER WEEK",
+    additionalInfo: "ADDITIONAL INFO"
 }
 
 /**
@@ -41,6 +42,7 @@ const Refugee = (props) => {
     const [beingEdited, setBeingEdited] = useState(false)
 
     const handleEdit = (event, detailToUpdate) => {
+        // Modified attributes are first stored in the buffer.
         let updatedInfo = { ...editDetailsBuffer }
         updatedInfo[detailToUpdate] = event.target.value
         setEditDetailsBuffer(updatedInfo)
@@ -59,6 +61,7 @@ const Refugee = (props) => {
 
     const createButtons = () => {
 
+        // Create the appropriate edit and save and cancel buttons.
         if (beingEdited) {
             return (
                 <div className="refugee-card-btn-tray">
@@ -77,6 +80,7 @@ const Refugee = (props) => {
 
     const createBody = () => {
 
+        // Create a label and Detail component for each attribute of Refugee.
         const details = Object.keys(DETAIL_LABELS).map(key => {
             return (
                 <Detail
@@ -90,11 +94,11 @@ const Refugee = (props) => {
                 </Detail>
             )
         })
+
         return details
     }
 
     return (
-        // Acts as a div, without creating a div in the DOM.
         <div className="refugee-card">
             {createButtons()}
             {createBody()}
@@ -107,26 +111,42 @@ const Detail = (props) => {
     const { detailKey, beingEdited, label, value, editBufferValue, handleEdit } = props
 
     if (beingEdited) {
-        return (
-            <React.Fragment>
-                <p className="refugee-label">{label}</p>
-                <input
-                    className="refugee-detail"
-                    value={editBufferValue}
-                    onChange={(e) => handleEdit(e, detailKey)}>
-                </input>
-            </React.Fragment>
-        )
-    } else {
-        if (label === "NAME") {
-            return <p className="refugee-name">{value}</p>
+        switch (label) {
+            case "ADDITIONAL INFO":
+                return (
+                    <React.Fragment>
+                        <p className="refugee-label">{label}</p>
+                        <textarea
+                            className="refugee-detail-text"
+                            value={editBufferValue}
+                            onChange={(e) => handleEdit(e, detailKey)}>
+                        </textarea>
+                    </React.Fragment>
+                )
+            default:
+                return (
+                    <React.Fragment>
+                        <p className="refugee-label">{label}</p>
+                        <input
+                            className="refugee-detail"
+                            value={editBufferValue}
+                            onChange={(e) => handleEdit(e, detailKey)}>
+                        </input>
+                    </React.Fragment>
+                )
         }
-        return (
-            <React.Fragment>
-                <p className="refugee-label">{label}</p>
-                <p className="refugee-detail">{value}</p>
-            </React.Fragment>
-        )
+    } else {
+        switch (label) {
+            case "NAME":
+                return <p className="refugee-name">{value}</p>
+            default:
+                return (
+                    <React.Fragment>
+                        <p className="refugee-label">{label}</p>
+                        <p className="refugee-detail">{value}</p>
+                    </React.Fragment>
+                )
+        }
     }
 }
 
