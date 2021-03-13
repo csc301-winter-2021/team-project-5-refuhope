@@ -2,35 +2,40 @@ const mongoose = require("mongoose");
 const { Host } = require("./host");
 const { Refugee } = require("./refugee");
 
+// representation of schedule - open to changes
+const DaySchema = new mongoose.Schema({
+  available: Boolean,
+  hours: [{start: Number, end: Number}]
+})
+
+const ScheduleSchema = new mongoose.Schema({
+  mon: DaySchema,
+  tues: DaySchema,
+  wed: DaySchema,
+  thurs: DaySchema,
+  fri: DaySchema,
+  sat: DaySchema,
+  sun: DaySchema
+});
+
 const OpportunitySchema = new mongoose.Schema({
   id: String,
   poster: Host,
   title: String,
   city: String,
   province: String,
-  work_type: {
+  workType: {
     type: String,
     enum: ["TUTORING", "GROCERIES"]
   },
   // TODO: change schedule data type
-  schedule: DailyScheduleSchema,
-  num_work_hours: Number,
+  schedule: ScheduleSchema,
+  numWorkHours: Number,
   status: {
     type: String,
     enum: ["MATCHED", "IN REVIEW", "REJECTED"]
   },
-  matched_refugee: Refugee
-});
-
-// temporary representation of schedule
-const DailyScheduleSchema = new mongoose.Schema({
-  mon: [{ start: Number, end: Number }],
-  tues: [{ start: Number, end: Number }],
-  wed: [{ start: Number, end: Number }],
-  thurs: [{ start: Number, end: Number }],
-  fri: [{ start: Number, end: Number }],
-  sat: [{ start: Number, end: Number }],
-  sun: [{ start: Number, end: Number }]
+  matchedRefugee: Refugee
 });
 
 const Opportunity = mongoose.model("Opportunity", OpportunitySchema);
