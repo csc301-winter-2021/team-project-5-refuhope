@@ -21,16 +21,36 @@
     text-align: left;
 }
 
-.refugee-card p {
-    margin: 0.5rem;
+.refugee-card input, p {
+    margin: 0.5rem auto;
+    padding: 0.5rem;
+    width: 90%;
+}
+
+.refugee-card button {
+    width: 75px;
+    align-self: flex-end;
+    padding: 0.5rem 1rem;
 }
 
 .refugee-name {
     margin: auto;
-    width: 100%;
+    margin-bottom: 0.5rem;
+    width: 90%;
     padding-bottom: 1rem;
+    box-sizing: border-box;
 
     font-size: 20pt;
     text-align: center;
     border-bottom: 2px solid purple;
+}
+
+.refugee-card-btn-tray {
+    display: flex;
+    align-self: flex-end;
+    margin-bottom: 1rem;
+}
+.refugee-card-btn-tray button {
+    margin: 0 0 0.5rem 0.5rem;
+    width: 75px;
 }
