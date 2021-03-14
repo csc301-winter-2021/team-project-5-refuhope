@@ -1,0 +1,35 @@
+language: node_js
+node_js:
+- "12"
+dist: xenial
+sudo: required
+# branches:
+#   only:
+#     - main
+#     - develop
+
+# command to install dependencies
+install:
+  - cd ./frontend
+  - npm install
+  - cd ../backend
+  - npm install
+  - cd ..
+
+# job to run tests
+# script:
+#   - cd backend
+#   - 
+
+# job to deploy
+deploy:
+  - provider: heroku
+    api_key: $HEROKU_AUTH_TOKEN
+    app: refutalent-dev
+    on:
+      branch: dev
+  - provider: heroku
+    api_key: $HEROKU_AUTH_TOKEN
+    app: refutalent
+    on:
+      branch: main
