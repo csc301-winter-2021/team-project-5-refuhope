@@ -1,0 +1,29 @@
+.loginContainer {
+    text-align: center;
+
+    align-items: center;
+    border-radius: 5px;
+    border: 2px solid purple;
+    width: fit-content;
+    margin: 0 auto;
+    margin-top: 20vh;
+    font-size: large;
+}
+
+.loginTitle {
+    color: purple;
+    border-bottom: 2px solid purple;
+    width: 100%;
+}
+
+.loginElement {
+    padding: 10px 10vh 10px; 
+}
+
+.loginButton {
+    padding: 5px;
+    width: 80px;
+    text-align: center;
+    font-size: medium;
+    margin: 10px 10px 10px;
+}
