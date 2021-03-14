@@ -1,0 +1,34 @@
+.signupContainer {
+    text-align: center;
+
+    border-radius: 5px;
+    border: 2px solid purple;
+    width: fit-content;
+    margin: 0 auto;
+    margin-top: 20vh;
+    font-size: large;
+}
+
+.signupTitle {
+    color: purple;
+    border-bottom: 2px solid purple;
+    width: 100%;
+}
+
+.signupElement {
+    padding: 10px 10vh 10px;
+    text-align: left;
+}
+
+.signupElement input {
+    margin-left: 10px;
+    float: right;
+}
+
+.signupButton {
+    padding: 5px;
+    width: 80px;
+    text-align: center;
+    font-size: medium;
+    margin: 10px 10px 10px;
+}
