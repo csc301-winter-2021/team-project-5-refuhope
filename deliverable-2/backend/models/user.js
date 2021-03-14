@@ -11,20 +11,19 @@ const UserSchema = new mongoose.Schema({
     trim: true,
     unique: true,
     validate: {
-			validator: validator.isEmail,
-			message: 'Non-valid email'
-		}
+		validator: validator.isEmail,
+		message: 'Non-valid email'
+	}
   },
   password: {
     type: String,
     required: true,
     minlength: 6
   },
-  isHost: {
-    type: Boolean,
-    required: true,
-    default: true
-  }
+  userType: {
+    type: String,
+    enum: ["HOST", "VOLUNTEER"]
+  },
 });
 
 const User = mongoose.model("User", UserSchema);
