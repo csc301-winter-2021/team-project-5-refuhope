@@ -6,7 +6,7 @@ import './Refugee.css'
  * Creates a mapping between the attributes of a Refugee, and labels. Enables us to programatically
  * generate a list of HTML elements. 
  */
-const DETAIL_LABELS = {
+export const REFUGEE_TEMPLATE = {
     name: "NAME",
     phone: "PHONE",
     email: "EMAIL",
@@ -81,13 +81,13 @@ const Refugee = (props) => {
     const createBody = () => {
 
         // Create a label and Detail component for each attribute of Refugee.
-        const details = Object.keys(DETAIL_LABELS).map(key => {
+        const details = Object.keys(REFUGEE_TEMPLATE).map(key => {
             return (
                 <Detail
                     key={key}
                     detailKey={key}
                     beingEdited={beingEdited}
-                    label={DETAIL_LABELS[key]}
+                    label={REFUGEE_TEMPLATE[key]}
                     value={info[key]}
                     editBufferValue={editDetailsBuffer[key]}
                     handleEdit={handleEdit}>
@@ -106,7 +106,7 @@ const Refugee = (props) => {
     )
 }
 
-const Detail = (props) => {
+export const Detail = (props) => {
 
     const { detailKey, beingEdited, label, value, editBufferValue, handleEdit } = props
 
