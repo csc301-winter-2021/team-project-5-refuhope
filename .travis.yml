@@ -3,10 +3,6 @@ node_js:
 - "12"
 dist: xenial
 sudo: required
-# branches:
-#   only:
-#     - main
-#     - develop
 
 # command to install dependencies
 install:
