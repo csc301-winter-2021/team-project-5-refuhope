@@ -1,0 +1,44 @@
+language: node_js
+node_js:
+- "12"
+dist: xenial
+sudo: required
+# branches:
+#   only:
+#     - main
+#     - develop
+
+# command to install dependencies
+install:
+  - cd ./deliverable-2/frontend
+  - npm install
+  - cd ../backend
+  - npm install
+  - cd ../..
+
+# job to run tests
+jobs:
+  include:
+    -
+      name: "Lint test"
+      script:
+        - echo "Running lint tests"
+        # - TODO: task#30 - add a linter to project
+    -
+      name: "Unit test"
+      script:
+        - echo "Running unit tests"
+        # - TODO: task#29 - add commands to run frontend and backend UTs
+
+# job to deploy
+deploy:
+  - provider: heroku
+    api_key: $HEROKU_AUTH_TOKEN
+    app: refutalent-dev
+    on:
+      branch: dev
+  - provider: heroku
+    api_key: $HEROKU_AUTH_TOKEN
+    app: refutalent
+    on:
+      branch: main
