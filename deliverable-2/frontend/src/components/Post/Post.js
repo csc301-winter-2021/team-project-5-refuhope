@@ -1,73 +1,165 @@
 import React, { useState } from 'react'
 import './Post.css'
 
-function Post() {
-    const [title, setTitle] = useState('Title')
-    const [status, setStatus] = useState('In Review')
-    const [host, setHost] = useState('')
-    const [workType, setWorkType] = useState('')
-    const [location, setLocation] = useState('')
-    const [schedule, setSchedule] = useState('')
-    const [hours, setHours] = useState('')
-    const [info, setInfo] = useState('')
-    const [statusColor, setStatusColor] = useState('statusIR')
+/**
+ * Creates a mapping between the attributes of a Refugee, and labels. Enables us to programatically
+ * generate a list of HTML elements. 
+ */
 
-    function updateTitle(title) {
-        setTitle(title)
+ export const POST_TEMPLATE = {
+    title: "TITLE",
+    status: "STATUS",
+    host: "HOST",
+    workType: "WORK TYPE",
+    location: "LOCATION",
+    schedule: "SCHEDULE",
+    hours: "HOURS PER WEEK",
+    additionalInfo: "ADDITIONAL INFO"
+}
+
+/**
+ * Expects props to have the following structure.
+ * 
+ * {
+ *  title: String,
+ *  status: String,
+ *  host: String,
+ *  workType: String,
+ *  location: String,
+ *  schedule: String,
+ *  hours: int,
+ *  additionalInfo: String
+ * }
+ * 
+ * In the near future, schedule should be updated so that its a 3-dimensional array.
+ */
+
+const Post = (props) => {
+    
+    // Stores a Posts' details
+    const [info, setInfo] = useState(props)
+
+    // Acts like a buffer for updated details
+    const [editDetailsBuffer, setEditDetailsBuffer] = useState(props)
+    const [beingEdited, setBeingEdited] = useState(false)
+
+    const handleEdit = (event, detailToUpdate) => {
+        // Modified attributes are first stored in the buffer.
+        let updatedInfo = { ...editDetailsBuffer }
+        updatedInfo[detailToUpdate] = event.target.value
+        setEditDetailsBuffer(updatedInfo)
     }
 
-    function updateStatus(status) {
-        setStatus(status)
-        if (status === "Matched") {
-            setStatusColor("statusM")
+    const saveEdit = (save) => {
+        if (save) {
+            // TODO: Create a PUT request; only update state if response is OK
+            setInfo(editDetailsBuffer)
+        } else {
+            // Reset the update buffer object.
+            setEditDetailsBuffer(info)
+        }
+        setBeingEdited(false)
+    }
+
+    const createButtons = () => {
+
+        // Create the appropriate edit and save and cancel buttons.
+        if (beingEdited) {
+            return (
+                <div className="post-card-btn-tray">
+                    <button onClick={() => saveEdit(true)}>Save</button>
+                    <button onClick={() => saveEdit(false)}>Cancel</button>
+                </div>
+            )
+        } else {
+            return (
+                <div className="post-card-btn-tray">
+                    <button onClick={() => setBeingEdited(true)}>Edit</button>
+                </div>
+            )
         }
     }
 
-    function updateHost(host) {
-        setHost(host)
-    }
+    const createBody = () => {
 
-    function updateWorkType(workType) {
-        setWorkType(workType)
-    }
+        // Create a label and Detail component for each attribute of Refugee.
+        const details = Object.keys(POST_TEMPLATE).map(key => {
+            return (
+                <Detail
+                    key={key}
+                    detailKey={key}
+                    beingEdited={beingEdited}
+                    label={POST_TEMPLATE[key]}
+                    value={info[key]}
+                    editBufferValue={editDetailsBuffer[key]}
+                    handleEdit={handleEdit}>
+                </Detail>
+            )
+        })
 
-    function updateLocation(location) {
-        setLocation(location)
-    }
-
-    function updateSchedule(schedule) {
-        setSchedule(schedule)
-    }
-
-    function updateHours(hours) {
-        setHours(hours)
-    }
-
-    function updateInfo(info) {
-        setInfo(info)
+        return details
     }
 
     return (
         <div className="postbox">
-            <div className="title"> {title} </div>
-            <div className={statusColor}> 
-                {status}
-            </div>
-            <div className="info">
-                <span className="section">Host:</span> <br></br>{host}
-                <br></br>
-                <span className="section">Work Type:</span> <br></br>{workType}
-                <br></br>
-                <span className="section">Location:</span> <br></br>{location}
-                <br></br>
-                <span className="section">Schedule:</span> <br></br>{schedule}
-                <br></br>
-                <span className="section">Hours:</span> <br></br>{hours}
-                <br></br>
-                <span className="section">Additional information:</span> <br></br>{info}
-            </div>
+            {createButtons()}
+            {createBody()}
         </div>
     )
+}
+
+export const Detail = (props) => {
+
+    const { detailKey, beingEdited, label, value, editBufferValue, handleEdit } = props
+
+    if (beingEdited) {
+        switch (label) {
+            case "ADDITIONAL INFO":
+                return (
+                    <React.Fragment>
+                        <p className="section">{label}:</p>
+                        <textarea
+                            className="info"
+                            value={editBufferValue}
+                            onChange={(e) => handleEdit(e, detailKey)}>
+                        </textarea>
+                    </React.Fragment>
+                )
+            default:
+                return (
+                    <React.Fragment>
+                        <p className="section">{label}:</p>
+                        <input
+                            className="info"
+                            value={editBufferValue}
+                            onChange={(e) => handleEdit(e, detailKey)}>
+                        </input>
+                    </React.Fragment>
+                )
+        }
+    } else {
+        switch (label) {
+            case "TITLE":
+                return <p className="title">{value}</p>
+            case "STATUS":
+                if (value === "In Progress") {
+                    return <p className="statusIR">{value}</p>
+                }
+                else if (value === "Matched") {
+                    return <p className="statusM">{value}</p>
+                }
+                else {
+                    return <p className="statusIR">{value}</p>
+                }
+            default:
+                return (
+                    <React.Fragment>
+                        <p className="section">{label}:</p>
+                        <p className="info">{value}</p>
+                    </React.Fragment>
+                )
+        }
+    }
 }
 
 export default Post
