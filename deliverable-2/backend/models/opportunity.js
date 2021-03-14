@@ -1,43 +1,50 @@
 const mongoose = require("mongoose");
-const { Host } = require("./host");
-const { Refugee } = require("./refugee");
+const { ScheduleSchema } = require("./schedule");
+const { ObjectID } = require("mongodb");
 
-// representation of schedule - open to changes
-const DaySchema = new mongoose.Schema({
-  available: Boolean,
-  hours: [{start: Number, end: Number}]
-})
-
-const ScheduleSchema = new mongoose.Schema({
-  mon: DaySchema,
-  tues: DaySchema,
-  wed: DaySchema,
-  thurs: DaySchema,
-  fri: DaySchema,
-  sat: DaySchema,
-  sun: DaySchema
-});
+const WORK_TYPES = ["TUTORING", "GROCERIES"]
+const STATUS_TYPES = ["MATCHED", "IN REVIEW", "REJECTED"]
 
 const OpportunitySchema = new mongoose.Schema({
-  id: String,
-  poster: Host,
-  title: String,
-  city: String,
-  province: String,
+  poster: { // ID of host
+    type: ObjectID,
+    required: true
+  },
+  title: {
+    type: String,
+    maxlength: 100,
+    required: true
+  },
+  description: {
+    type: String,
+    maxlength: 500
+  },
+  city: {
+    type: String,
+    required: true
+  },
+  province: {
+    type: String,
+    required: true
+  },
   workType: {
     type: String,
-    enum: ["TUTORING", "GROCERIES"]
+    enum: WORK_TYPES,
+    required: true
   },
-  // TODO: change schedule data type
   schedule: ScheduleSchema,
-  numWorkHours: Number,
+  numWorkHours: {
+    type: Number,
+    required: true
+  },
   status: {
     type: String,
-    enum: ["MATCHED", "IN REVIEW", "REJECTED"]
+    enum: STATUS_TYPES,
+    required: true
   },
-  matchedRefugee: Refugee
+  matchedRefugee: ObjectID // ID of refugee
 });
 
 const Opportunity = mongoose.model("Opportunity", OpportunitySchema);
 
-module.exports = { Opportunity };
+module.exports = { Opportunity, WORK_TYPES, STATUS_TYPES };

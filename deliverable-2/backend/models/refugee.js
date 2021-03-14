@@ -1,23 +1,5 @@
 const mongoose = require("mongoose");
-
-// representation of schedule - open to changes
-const DaySchema = new mongoose.Schema({
-  available: {
-    type: Boolean,
-    default: false
-  },
-  hours: [{start: Number, end: Number}]
-})
-
-const ScheduleSchema = new mongoose.Schema({
-  mon: DaySchema,
-  tues: DaySchema,
-  wed: DaySchema,
-  thurs: DaySchema,
-  fri: DaySchema,
-  sat: DaySchema,
-  sun: DaySchema
-});
+const { ScheduleSchema } = require("./schedule");
 
 const RefugeeSchema = new mongoose.Schema({
   name: {
@@ -43,7 +25,5 @@ const RefugeeSchema = new mongoose.Schema({
 });
 
 const Refugee = mongoose.model("Refugee", RefugeeSchema);
-const Schedule = mongoose.model("Schedule", ScheduleSchema);
-const Day = mongoose.model("Day", DaySchema);
 
-module.exports = { Refugee, Schedule, Day };
+module.exports = { Refugee };
