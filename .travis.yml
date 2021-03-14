@@ -10,16 +10,16 @@ sudo: required
 
 # command to install dependencies
 install:
-  - cd ./frontend
+  - cd ./deliverable-2/frontend
   - npm install
   - cd ../backend
   - npm install
-  - cd ..
+  - cd ../..
 
 # job to run tests
-# script:
-#   - cd backend
-#   - 
+script:
+- echo "Running unit tests"
+# - TODO: task#29 - add commands to run frontend and backend UTs
 
 # job to deploy
 deploy:
