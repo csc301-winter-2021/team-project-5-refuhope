@@ -23,6 +23,21 @@
     font-size: 15pt;
 }
 
+.post-card-btn-tray {
+    display: flex;
+    width: 100%;
+    margin: 1rem auto 0rem auto;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.post-card-btn-tray button {
+    width: 75px;
+    align-self: flex-end;
+    padding: 0.5rem 1rem;
+    margin-left: 0.5rem;
+}
+
 .statusIR {
     float: right;
     color: gray;
@@ -42,11 +57,12 @@
 .info {
     text-align: left;
     color: black;
-    font-family: 'Times New Roman', Times, serif;
+    font-family: Verdana;
     font-size: 12pt;
 }
 
 .section {
+    text-align: left;
     color: purple;
     font-family: Verdana;
     font-weight: bold;
