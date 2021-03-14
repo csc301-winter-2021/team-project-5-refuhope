@@ -26,17 +26,17 @@ jobs:
     - 
       stage: Deploy
       install: skip
-      script: skip
+      script: cd ./deliverable-2
       deploy: 
         - 
           api_key: $HEROKU_AUTH_TOKEN
           app: refutalent-dev
           provider: heroku
-          true: 
+          on: 
             branch: develop
         - 
           api_key: $HEROKU_AUTH_TOKEN
           app: refutalent
           provider: heroku
-          true: 
+          on: 
             branch: main
