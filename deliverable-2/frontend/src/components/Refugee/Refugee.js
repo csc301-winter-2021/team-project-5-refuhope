@@ -3,6 +3,21 @@ import { useState } from 'react'
 import './Refugee.css'
 
 /**
+ * Creates a mapping between the attributes of a Refugee, and labels. Enables us to programatically
+ * generate a list of HTML elements. 
+ */
+export const REFUGEE_TEMPLATE = {
+    name: "NAME",
+    phone: "PHONE",
+    email: "EMAIL",
+    location: "LOCATION",
+    workType: "WORK TYPE",
+    schedule: "SCHEDULE",
+    numWorkHours: "HOURS PER WEEK",
+    additionalInfo: "ADDITIONAL INFO"
+}
+
+/**
  * Expects props to have the following structure.
  * 
  * {
@@ -27,6 +42,7 @@ const Refugee = (props) => {
     const [beingEdited, setBeingEdited] = useState(false)
 
     const handleEdit = (event, detailToUpdate) => {
+        // Modified attributes are first stored in the buffer.
         let updatedInfo = { ...editDetailsBuffer }
         updatedInfo[detailToUpdate] = event.target.value
         setEditDetailsBuffer(updatedInfo)
@@ -43,48 +59,95 @@ const Refugee = (props) => {
         setBeingEdited(false)
     }
 
-    const generateCardBody = () => {
+    const createButtons = () => {
 
-        if (beingEdited) { // Render editable inputs.
-            // Create a controlled input for each piece of info.
-            let inputs = Object.keys(info).map(detail =>
-                <input
-                    key={detail}
-                    placeholder={editDetailsBuffer[detail]}
-                    value={editDetailsBuffer[detail]}
-                    onChange={(e) => handleEdit(e, detail)}>
-                </input>)
-
+        // Create the appropriate edit and save and cancel buttons.
+        if (beingEdited) {
             return (
-                <div className="refugee-card">
-                    <div className="refugee-card-btn-tray">
-                        <button onClick={() => saveEdit(true)}>Save</button>
-                        <button onClick={() => saveEdit(false)}>Cancel</button>
-                    </div>
-                    {inputs}
-
-                </div>)
-        } else { // Render immutable paragraphs.
+                <div className="refugee-card-btn-tray">
+                    <button onClick={() => saveEdit(true)}>Save</button>
+                    <button onClick={() => saveEdit(false)}>Cancel</button>
+                </div>
+            )
+        } else {
             return (
-                <div className="refugee-card">
+                <div className="refugee-card-btn-tray">
                     <button onClick={() => setBeingEdited(true)}>Edit</button>
-                    <p className="refugee-name">{info.name}</p>
-                    <p>Phone: {info.phone}</p>
-                    <p>Email: {info.email}</p>
-                    <p>Location: {info.location}</p>
-                    <p>Work Type: {info.workType}</p>
-                    <p>Schedule: {info.schedule}</p>
-                    <p>Hours: {info.numWorkHours}</p>
-                </div>)
+                </div>
+            )
         }
     }
 
+    const createBody = () => {
+
+        // Create a label and Detail component for each attribute of Refugee.
+        const details = Object.keys(REFUGEE_TEMPLATE).map(key => {
+            return (
+                <Detail
+                    key={key}
+                    detailKey={key}
+                    beingEdited={beingEdited}
+                    label={REFUGEE_TEMPLATE[key]}
+                    value={info[key]}
+                    editBufferValue={editDetailsBuffer[key]}
+                    handleEdit={handleEdit}>
+                </Detail>
+            )
+        })
+
+        return details
+    }
+
     return (
-        // Acts as a div, without creating a div in the DOM.
-        <React.Fragment>
-            {generateCardBody()}
-        </React.Fragment>
+        <div className="refugee-card">
+            {createButtons()}
+            {createBody()}
+        </div>
     )
+}
+
+export const Detail = (props) => {
+
+    const { detailKey, beingEdited, label, value, editBufferValue, handleEdit } = props
+
+    if (beingEdited) {
+        switch (label) {
+            case "ADDITIONAL INFO":
+                return (
+                    <React.Fragment>
+                        <p className="refugee-label">{label}</p>
+                        <textarea
+                            className="refugee-detail-text"
+                            value={editBufferValue}
+                            onChange={(e) => handleEdit(e, detailKey)}>
+                        </textarea>
+                    </React.Fragment>
+                )
+            default:
+                return (
+                    <React.Fragment>
+                        <p className="refugee-label">{label}</p>
+                        <input
+                            className="refugee-detail"
+                            value={editBufferValue}
+                            onChange={(e) => handleEdit(e, detailKey)}>
+                        </input>
+                    </React.Fragment>
+                )
+        }
+    } else {
+        switch (label) {
+            case "NAME":
+                return <p className="refugee-name">{value}</p>
+            default:
+                return (
+                    <React.Fragment>
+                        <p className="refugee-label">{label}</p>
+                        <p className="refugee-detail">{value}</p>
+                    </React.Fragment>
+                )
+        }
+    }
 }
 
 export default Refugee
