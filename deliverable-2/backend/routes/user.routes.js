@@ -46,5 +46,36 @@ router.get('/api/userSearch', (req, res) => {
 
 // TODO: Task#35 - add user routes involving session (e.g. get logged-in user, logout - destroy session)
 
+// add a new user to db
+router.post('/api/userAdd', (req, res) => {
+	// create a new user (default to host user since refutalent volunteers share credentials)
+	const newUser = new User({
+		name: req.body.name,
+        phone: req.body.phone,
+        email: req.body.email,
+        username: req.body.username,
+		password: req.body.password,
+		isHost: true
+	});
+	// save new user to database
+	newUser.save().then((result) => {
+		res.send({ response: result });
+	}, (error) => {
+		// 400 for bad request
+        res.status(400).send(error);
+	});
+});
+
+// delete user by email (might be useful)
+router.delete('/api/userDelete/:email', (req, res) => {
+	const userEmail = req.params.email;
+    // find and delete user associated to specified email
+	User.findOneAndDelete({ email: userEmail }).then((deletedUser) => {
+		res.send({ deletedUser });
+	}, (error) => {
+		res.status(400).send(error);
+	});
+});
+
 // export the router
 module.exports = router;
