@@ -17,9 +17,18 @@ install:
   - cd ../..
 
 # job to run tests
-script:
-- echo "Running unit tests"
-# - TODO: task#29 - add commands to run frontend and backend UTs
+jobs:
+  include:
+    -
+      name: "Lint test"
+      script:
+        - echo "Running lint tests"
+        # - TODO: task#30 - add a linter to project
+    -
+      name: "Unit test"
+      script:
+        - echo "Running unit tests"
+        # - TODO: task#29 - add commands to run frontend and backend UTs
 
 # job to deploy
 deploy:
