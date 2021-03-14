@@ -20,7 +20,7 @@ app.use(express.json());
 /* API routes */
 // routes dealing with refugees
 // get refugee by id
-app.get('/refugeeByID/:id', (req, res) => {
+app.get('/api/refugeeByID/:id', (req, res) => {
 	const id = req.params.id;
 	// check if id is valid
 	if (!ObjectID.isValid(id)) {
@@ -40,7 +40,7 @@ app.get('/refugeeByID/:id', (req, res) => {
 })
 
 // get refugee with specified name in search
-app.get('/refugeeSearch/:name', (req, res) => {
+app.get('/api/refugeeSearch/:name', (req, res) => {
 	const refugeeName = req.params.name;
 	// find one refugee with given name and send bad request on failure
 	Refugee.findOne({ name:refugeeName }).then(foundRefugee => {
@@ -51,7 +51,7 @@ app.get('/refugeeSearch/:name', (req, res) => {
 })
 
 // get all registered refugees (useful for refugee dashboard page)
-app.get('/refugeeSearch', (req, res) => {
+app.get('/api/refugeeSearch', (req, res) => {
 	// find all refugees registered in db and send bad request on failure
 	Refugee.find().then((allRefugees) => {
 		res.send({ allRefugees })
@@ -61,7 +61,7 @@ app.get('/refugeeSearch', (req, res) => {
 })
 
 // add a new refugee to db 
-app.post('/refugeeAdd', (req, res) => {
+app.post('/api/refugeeAdd', (req, res) => {
 	// console.log(req.body);
 	// default to unavailable
 	const dailySchedule = new Day({
