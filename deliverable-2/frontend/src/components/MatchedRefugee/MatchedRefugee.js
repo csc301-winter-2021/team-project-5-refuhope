@@ -65,14 +65,14 @@ const MatchedRefugee = (props) => {
         // Create the appropriate edit and save and cancel buttons.
         if (beingEdited) {
             return (
-                <div className="refugee-card-btn-tray">
+                <div className="match-card-btn-tray">
                     <button onClick={() => saveEdit(true)}>Save</button>
                     <button onClick={() => saveEdit(false)}>Cancel</button>
                 </div>
             )
         } else {
             return (
-                <div className="refugee-card-btn-tray">
+                <div className="match-card-btn-tray">
                     <button onClick={() => setBeingEdited(true)}>Edit</button>
                 </div>
             )
@@ -100,7 +100,7 @@ const MatchedRefugee = (props) => {
     }
 
     return (
-        <div className="refugee-card">
+        <div className="match-card">
             {createButtons()}
             {createBody()}
             <button onClick={() => acceptRefugee()}> Accept </button>
@@ -116,9 +116,9 @@ export const Detail = (props) => {
     if (beingEdited) {
                 return (
                     <React.Fragment>
-                        <p className="refugee-label">{label}</p>
+                        <p className="match-label">{label}</p>
                         <input
-                            className="refugee-detail"
+                            className="match-detail"
                             value={editBufferValue}
                             onChange={(e) => handleEdit(e, detailKey)}>
                         </input>
@@ -128,12 +128,12 @@ export const Detail = (props) => {
     else {
         switch (label) {
             case "NAME":
-                return <p className="refugee-name">{value}</p>
+                return <p className="match-name">{value}</p>
             default:
                 return (
                     <React.Fragment>
-                        <p className="refugee-label">{label}</p>
-                        <p className="refugee-detail">{value}</p>
+                        <p className="match-label">{label}</p>
+                        <p className="match-detail">{value}</p>
                     </React.Fragment>
                 )
         }
