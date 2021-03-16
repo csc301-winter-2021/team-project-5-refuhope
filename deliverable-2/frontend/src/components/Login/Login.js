@@ -1,8 +1,10 @@
 import React from 'react'
 import { useState } from 'react'
+import { useHistory } from 'react-router'
 import './Login.css'
 
 function Login() {
+    const history = useHistory()
     const [email, setEmail] = useState('')
     const [pwd, setPwd] = useState('')
 
@@ -15,11 +17,34 @@ function Login() {
     }
 
     const handleLogin = e => {
-        // GET
+        const request = new Request(`/api/login?email=${email}&password=${pwd}`, {
+            headers: {
+                Accept: "application/json, text/plain, */*",
+                "Content-Type": "application/json"
+            }
+        })
+        fetch(request)
+            .then(res => {
+                if (res.status === 200) {
+                    return res.json();
+                }
+            })
+            .then(json => {
+                if (json.response.userType === "HOST"){
+                    history.push("/hostdash")
+                }
+                else if (json.response.userType === "VOLUNTEER"){
+                    history.push("/volunteerdash")
+                }
+                
+            })
+            .catch(error => {
+                console.log(error);
+            });
     }
 
     const handleSignUp = e => {
-        // Reroute
+        history.push("/signup")
     }
 
     return (
