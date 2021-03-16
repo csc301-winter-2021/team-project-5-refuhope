@@ -20,6 +20,10 @@ const RefugeeSchema = new mongoose.Schema({
     type: String,
     enum: ["TUTORING", "GROCERIES"]
   },
+  additionalInfo: {
+    type: String,
+    maxlength: 500
+  },
   schedule: ScheduleSchema,
   numWorkHours: Number
 });

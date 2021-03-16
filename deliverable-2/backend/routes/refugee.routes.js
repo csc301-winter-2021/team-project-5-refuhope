@@ -67,6 +67,7 @@ router.post("/api/refugeeAdd", (req, res) => {
 		email: req.body.email,
 		city: req.body.city,
 		province: req.body.prov,
+		additionalInfo: req.body.additionalInfo,
 		workType: req.body.workType,
 		schedule: refugeeSchedule,
 		numWorkHours: req.body.numWorkHours
