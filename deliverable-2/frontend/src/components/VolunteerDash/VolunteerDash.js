@@ -32,7 +32,7 @@ const postRefugee = async (newRefugee) => {
         workType: newRefugee.workType,
         schedule: [],
         numWorkHours: newRefugee.numWorkHours,
-        // additionalInfo: newRefugee.additionalInfo
+        additionalInfo: newRefugee.additionalInfo
     }
 
     const request = new Request(
@@ -76,6 +76,7 @@ const RefugeeDash = () => {
                             workType={ref.workType}
                             schedule={"WIP"}
                             numWorkHours={ref.numWorkHours}
+                            additionalInfo={ref.additionalInfo}
                         ></Refugee>
                     )
                 })
