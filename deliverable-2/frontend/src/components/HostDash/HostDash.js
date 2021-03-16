@@ -4,11 +4,87 @@ import { useState, useEffect } from 'react'
 import Post, { Detail, POST_TEMPLATE } from '../Post/Post'
 import './HostDash.css'
 
+/* API Calls. */
+
+const getOpportunities = async () => {
+
+    const request = new Request('/api/opportunitySearch', { method: 'GET' })
+    const response = await fetch(request)
+
+    if (response.ok) {
+        const data = await response.json()
+        return data.response
+    } else {
+        return null
+    }
+}
+
+const postOpportunity = async (newPost) => {
+
+    const body = {
+        title: newPost.title,
+        // New posts are always in review
+        // status: "STATUS",
+        // Right now we must create some random ID for the host/poster.
+        // host: "HOST",
+        workType: newPost.workType,
+        // Expects location to be in the form: city, province
+        city: newPost.location.split(",")[0],
+        province: newPost.location.split(",")[1],
+        schedule: [],
+        numWorkHours: newPost.hours,
+        description: newPost.additionalInfo
+    }
+
+    const request = new Request(
+        '/api/opportunityAdd',
+        {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', },
+            body: JSON.stringify(body)
+        }
+    )
+
+    const response = await fetch(request)
+    return response.ok
+}
+
 const HostDash = () => {
-    
+
+    /* Setup */
+
     const [posts, setPosts] = useState([])
     const [beingEdited, setBeingEdited] = useState(false)
     const [newPost, setNewPost] = useState(Object.create(POST_TEMPLATE))
+
+    // The empty array argument indicates that this funciton should only be run on this component's intial render.
+    useEffect(() => {
+
+        // Apparently this IIFE is needed to avoid race conditions in rendering.
+        (async () => {
+            const postList = await getOpportunities()
+            if (postList === null) {
+                alert("Couldn't load Posts.")
+            } else {
+                const postComponents = postList.map(p => {
+                    return (
+                        <Post
+                            key={p._id}
+                            title={p.title}
+                            status={p.status}
+                            host={p.poster}
+                            workType={p.workType}
+                            location={p.city + ", " + p.province}
+                            schedule={"WIP"}
+                            hours={p.numWorkHours}
+                            additionalInfo={p.description}
+                        ></Post>
+                    )
+                })
+                setPosts(postComponents)
+            }
+        })()
+    }, [])
 
     const handleEdit = (event, key) => {
         // Modified attributes are first stored in the buffer.
@@ -18,13 +94,21 @@ const HostDash = () => {
     }
 
     const saveEdit = (save) => {
+
+        // Try to write Post to DB.
         if (save) {
-            // TODO: Create a POST request; only add new Refugee to state if status is OK.
-            let newPostComp = <Post {...newPost}></Post>
-            setPosts([...posts, newPostComp])
-        } else {
+            const successful = postOpportunity(newPost)
+            // Post successfully stored in DB; create UI element.
+            if (successful) {
+                let newPostComp = <Post {...newPost}></Post>
+                setPosts([...posts, newPostComp])
+            } else {
+                // Write to databse failed.
+                alert("Woops! Couldn't write Post to DB, please try again!")
+            }
             setNewPost(Object.create(POST_TEMPLATE))
         }
+        // Reset edit buffer.
         setBeingEdited(false)
     }
 
