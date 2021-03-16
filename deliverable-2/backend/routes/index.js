@@ -4,11 +4,6 @@ const path = require('path');
 
 // import our mongoose connection
 const mongoose = require('../db/mongoose');
-const { ObjectID } = require('mongodb');
-// import mongoose schema models
-// const { Volunteer } = require('../models/volunteer')
-// const { Opportunity } = require('../models/opportunity')
-// const { Host } = require('../models/host')
 
 // express setup
 const port = process.env.PORT || 3000;
@@ -19,7 +14,9 @@ app.use(express.json());
 /* API routes */
 // refugee routes
 app.use(require('./refugee.routes'));
-// host routes
+
+// user routes
+app.use(require('./user.routes'));
 
 // volunteer opportunity routes
 app.use(require('./opportunity.routes'));
