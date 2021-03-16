@@ -15,7 +15,7 @@ const OpportunitySchema = new mongoose.Schema({
     maxlength: 100,
     required: true
   },
-  description: {
+  additionalInfo: {
     type: String,
     maxlength: 500
   },
