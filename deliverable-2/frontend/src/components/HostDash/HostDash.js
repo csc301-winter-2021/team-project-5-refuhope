@@ -131,7 +131,7 @@ const HostDash = () => {
             return (
                 <div className="hostdash-modal-back">
                     <div className="hostdash-modal-body">
-                        <div className="host-card-btn-tray">
+                        <div className="post-card-btn-tray">
                             <button onClick={() => saveEdit(true)}>Save</button>
                             <button onClick={() => saveEdit(false)}>Cancel</button>
                         </div>

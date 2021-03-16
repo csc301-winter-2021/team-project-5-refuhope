@@ -6,7 +6,7 @@ import './Post.css'
  * generate a list of HTML elements. 
  */
 
- export const POST_TEMPLATE = {
+export const POST_TEMPLATE = {
     title: "TITLE",
     status: "STATUS",
     host: "HOST",
@@ -35,7 +35,7 @@ import './Post.css'
  */
 
 const Post = (props) => {
-    
+
     // Stores a Posts' details
     const [info, setInfo] = useState(props)
 
@@ -101,7 +101,7 @@ const Post = (props) => {
     }
 
     return (
-        <div className="postbox">
+        <div className="post-card">
             {createButtons()}
             {createBody()}
         </div>
@@ -117,9 +117,9 @@ export const Detail = (props) => {
             case "ADDITIONAL INFO":
                 return (
                     <React.Fragment>
-                        <p className="section">{label}:</p>
+                        <p className="post-label">{label}</p>
                         <textarea
-                            className="info"
+                            className="post-detail-text"
                             value={editBufferValue}
                             onChange={(e) => handleEdit(e, detailKey)}>
                         </textarea>
@@ -128,9 +128,9 @@ export const Detail = (props) => {
             default:
                 return (
                     <React.Fragment>
-                        <p className="section">{label}:</p>
+                        <p className="post-label">{label}</p>
                         <input
-                            className="info"
+                            className="post-detail"
                             value={editBufferValue}
                             onChange={(e) => handleEdit(e, detailKey)}>
                         </input>
@@ -140,22 +140,19 @@ export const Detail = (props) => {
     } else {
         switch (label) {
             case "TITLE":
-                return <p className="title">{value}</p>
+                return <p className="post-title">{value}</p>
             case "STATUS":
-                if (value === "In Progress") {
-                    return <p className="statusIR">{value}</p>
-                }
-                else if (value === "Matched") {
-                    return <p className="statusM">{value}</p>
+                if (value === "Matched") {
+                    return <p className="post-status-matched">{value}</p>
                 }
                 else {
-                    return <p className="statusIR">{value}</p>
+                    return <p className="post-status-review">{value}</p>
                 }
             default:
                 return (
                     <React.Fragment>
-                        <p className="section">{label}:</p>
-                        <p className="info">{value}</p>
+                        <p className="post-label">{label}</p>
+                        <p className="post-detail">{value}</p>
                     </React.Fragment>
                 )
         }
