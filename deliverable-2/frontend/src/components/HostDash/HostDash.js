@@ -144,7 +144,7 @@ const HostDash = () => {
     }
 
     return (
-        <React.Fragment>
+        <div className="hostdash-container">
             <nav className="hostdash-nav">
                 <p>RefuTalent</p>
                 <button onClick={() => setBeingEdited(true)}>Create New Post</button>
@@ -153,7 +153,7 @@ const HostDash = () => {
                 {renderModal()}
                 {posts}
             </div>
-        </React.Fragment>
+        </div>
     )
 }
 

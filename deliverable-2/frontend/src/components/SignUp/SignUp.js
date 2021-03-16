@@ -14,7 +14,7 @@ function SignUp() {
     })
 
     const handleInput = e => {
-        setAccount(field => ({...field, [e.target.id]: e.target.value}))
+        setAccount(field => ({ ...field, [e.target.id]: e.target.value }))
     }
 
     const handleSignUp = e => {
@@ -40,9 +40,9 @@ function SignUp() {
                 }
             })
             .then(json => {
-                if (json.response){
+                if (json.response) {
                     history.push("/")
-                } 
+                }
             })
             .catch(error => {
                 console.log(error);
@@ -51,13 +51,12 @@ function SignUp() {
     }
 
     return (
-        <div className="signupContainer">
-            <div className="signupTitle">
+        <div className="signup-container">
+            <div className="signup-title">
                 <p>Create Account</p>
             </div>
-            <div className="l">
-            <div className="signupElement">
-                <span>Email: </span>
+            <div className="signup-element">
+                <label>Email</label>
                 <input
                     type="text"
                     id="email"
@@ -65,8 +64,8 @@ function SignUp() {
                     onChange={handleInput}
                 />
             </div>
-            <div className="signupElement">
-                <span>Password:  </span>
+            <div className="signup-element">
+                <label>Password</label>
                 <input
                     type="text"
                     id="pwd"
@@ -74,8 +73,8 @@ function SignUp() {
                     onChange={handleInput}
                 />
             </div>
-            <div className="signupElement">
-                <span>Name: </span>
+            <div className="signup-element">
+                <label>Name</label>
                 <input
                     type="text"
                     id="name"
@@ -83,8 +82,8 @@ function SignUp() {
                     onChange={handleInput}
                 />
             </div>
-            <div className="signupElement">
-                <span>Phone: </span>
+            <div className="signup-element">
+                <label>Phone</label>
                 <input
                     type="text"
                     id="phone"
@@ -92,8 +91,8 @@ function SignUp() {
                     onChange={handleInput}
                 />
             </div>
-            <div className="signupElement">
-                <span>Username: </span>
+            <div className="signup-element">
+                <label>Username</label>
                 <input
                     type="text"
                     id="usern"
@@ -101,14 +100,13 @@ function SignUp() {
                     onChange={handleInput}
                 />
             </div>
-            </div>
-            <button 
-                className="signupButton"
+            <button
+                className="signup-create-acc-button"
                 onClick={handleSignUp}
             >
-                Sign Up
+                Create Account
             </button>
-            
+
         </div>
     )
 }

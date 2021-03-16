@@ -146,7 +146,7 @@ const RefugeeDash = () => {
     }
 
     return (
-        <React.Fragment>
+        <div className="refugeedash-container">
             <nav className="refugeedash-nav">
                 <p>RefuTalent</p>
                 <button onClick={() => setBeingEdited(true)}>Create New Refugee</button>
@@ -155,7 +155,7 @@ const RefugeeDash = () => {
                 {renderModal()}
                 {refugees}
             </div>
-        </React.Fragment>
+        </div>
     )
 }
 
