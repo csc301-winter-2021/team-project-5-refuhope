@@ -1,26 +1,47 @@
-.postbox{
-    width:400px;
-    border-radius:4px;
-    border:2px solid purple;
-    position:relative;
-    padding:48px 10px 10px;
+.post-card {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+
+    width: 50%;
+    min-width: 300px;
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 5px 10px 0px rgb(138 134 138);
 }
 
-.title {
-    display: inline;
-    position: absolute;
-    top: 0px;
-    left: 0;
+.post-label, .post-detail, .post-title {
+    margin: 0.5rem auto;
     width: 100%;
-    height: 40px;
-    line-height: 40px;
-    text-indent: 10px;
-    border-bottom: 2px solid purple;
-    color: purple;
-    text-transform: uppercase;
+
+    color: rgb(110, 110, 110);
     font-family: Verdana;
-    font-weight: bold;
-    font-size: 15pt;
+    font-size: 1.1rem;
+    text-align: left;
+}
+
+.post-title {
+    padding-bottom: 1rem;
+    box-sizing: border-box;
+
+    font-size: 2rem;
+    text-align: center;
+    border-bottom: 4px rgb(200, 200, 200) solid;
+}
+
+.post-label {
+    color: rgb(150, 150, 150);
+    margin-bottom: 0;
+}
+
+.post-detail {
+    box-sizing: border-box;
+    border: 1px rgb(200, 200, 200) solid;
+    padding: 1rem;
 }
 
 .post-card-btn-tray {
@@ -38,33 +59,28 @@
     margin-left: 0.5rem;
 }
 
-.statusIR {
-    float: right;
+.post-detail-text {
+    margin: 0.5rem auto;
+    width: 100%;
+    resize: none;
+
+    box-sizing: border-box;
+    border: 1px rgb(200, 200, 200) solid;
+    padding: 1rem;
+    font-family: Verdana;
+    font-size: 1.1rem;
+}
+
+.post-status-matched, .post-status-review {
+    text-align: center;
+    margin: 0;
+    padding-top: 0.75rem;
     color: gray;
     font-family: Verdana;
     font-weight: bold;
-    font-size: 10pt;
+    font-size: 14pt;
 }
 
-.statusM {
-    float: right;
-    color: green;
-    font-family: Verdana;
-    font-weight: bold;
-    font-size: 10pt;
-}
-
-.info {
-    text-align: left;
-    color: black;
-    font-family: Verdana;
-    font-size: 12pt;
-}
-
-.section {
-    text-align: left;
-    color: purple;
-    font-family: Verdana;
-    font-weight: bold;
-    font-size: 12pt;
+.post-status-matched {
+    color:rgb(143, 184, 82);
 }
