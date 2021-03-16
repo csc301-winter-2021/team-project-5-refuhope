@@ -7,6 +7,9 @@
     "start": "node ./routes/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "jest": {
+    "testEnvironment": "node"
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
@@ -14,5 +17,9 @@
     "mongodb": "^3.6.4",
     "mongoose": "^5.11.19",
     "validator": "^13.5.2"
+  },
+  "devDependencies": {
+    "jest": "^26.6.3",
+    "supertest": "^6.1.3"
   }
 }
