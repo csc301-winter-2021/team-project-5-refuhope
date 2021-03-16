@@ -94,7 +94,7 @@ router.post("/api/opportunityAdd", (req, res) => {
   const newOpportunity = new Opportunity({
     poster: new ObjectID(), // TODO: once cookies are added, get poster id from session (task#32)
     title: req.body.title,
-    description: req.body.description,
+    additionalInfo: req.body.additionalInfo,
     city: req.body.city,
     province: req.body.province,
     workType: req.body.workType,
