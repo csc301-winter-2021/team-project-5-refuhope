@@ -26,7 +26,7 @@ it('When POST opportunityAdd should add new opportunity and status 200', async d
     const res = await request(app).post('/api/opportunityAdd')
         .send({
             title: "title",
-            description: "description",
+            additionalInfo: "additionalInfo",
             city: "city",
             province: "province",
             workType: "TUTORING",
@@ -44,13 +44,13 @@ it('When POST opportunityAdd should add new opportunity and status 200', async d
 // JSON.parse(res.text).response._id
 it('When GET opportunityByPoster should return opportunity and status 200', async done => {
     const check = await Opportunity.findOne({title: "title"})
-    expect(check.description).toBeTruthy()
+    expect(check.additionalInfo).toBeTruthy()
 
     const res = await request(app).get('/api/opportunityByPoster/'+check._id)
     expect(res.statusCode).toBe(200);
     
     const op = await Opportunity.findOne({_id: check._id})
-    expect(op.description).toBeTruthy()
+    expect(op.additionalInfo).toBeTruthy()
 
     done();
 })
