@@ -30,13 +30,13 @@ function Login() {
                 }
             })
             .then(json => {
-                if (json.response.userType === "HOST"){
+                if (json.response.userType === "HOST") {
                     history.push("/hostdash")
                 }
-                else if (json.response.userType === "VOLUNTEER"){
+                else if (json.response.userType === "VOLUNTEER") {
                     history.push("/volunteerdash")
                 }
-                
+
             })
             .catch(error => {
                 console.log(error);
@@ -48,49 +48,45 @@ function Login() {
     }
 
     return (
-        <div className="loginContainer">
-            <div className="loginTitle">
+        <div className="login-container">
+            <div className="login-title">
                 <p>Welcome to RefuTalent</p>
             </div>
-            <div className="loginElement">
-                <label>Email:</label>
-                <div>
-                    <input
-                        type="email"
-                        value={email}
-                        onChange={handleEmail}
-                    />
-                </div>
+            <div className="login-element">
+                <label>Email</label>
+                <input
+                    type="email"
+                    value={email}
+                    onChange={handleEmail}
+                />
             </div>
 
-            <div className="loginElement">
-                <label> Password: </label>
-                <div>
-                    <input
-                        type="password"
-                        value={pwd}
-                        onChange={handlePwd}
-                    />
-                </div>
+            <div className="login-element">
+                <label>Password</label>
+                <input
+                    type="password"
+                    value={pwd}
+                    onChange={handlePwd}
+                />
             </div>
 
-            <button 
-                className="loginButton"
+            <button
+                className="login-button"
                 onClick={handleLogin}
             >
                 Login
             </button>
 
-            
+
             <div>
                 <span>New User?</span>
-                <button 
-                    className="loginButton"
+                <button
+                    className="signup-button"
                     onClick={handleSignUp}>
-                        Sign Up
+                    Sign Up
                 </button>
             </div>
-            
+
         </div>
     )
 }

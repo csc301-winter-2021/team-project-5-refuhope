@@ -33,7 +33,7 @@ const postOpportunity = async (newPost) => {
         province: newPost.location.split(",")[1],
         schedule: [],
         numWorkHours: newPost.hours,
-        description: newPost.additionalInfo
+        additionalInfo: newPost.additionalInfo
     }
 
     const request = new Request(
@@ -77,7 +77,7 @@ const HostDash = () => {
                             location={p.city + ", " + p.province}
                             schedule={"WIP"}
                             hours={p.numWorkHours}
-                            additionalInfo={p.description}
+                            additionalInfo={p.additionalInfo}
                         ></Post>
                     )
                 })
@@ -144,7 +144,7 @@ const HostDash = () => {
     }
 
     return (
-        <React.Fragment>
+        <div className="hostdash-container">
             <nav className="hostdash-nav">
                 <p>RefuTalent</p>
                 <button onClick={() => setBeingEdited(true)}>Create New Post</button>
@@ -153,7 +153,7 @@ const HostDash = () => {
                 {renderModal()}
                 {posts}
             </div>
-        </React.Fragment>
+        </div>
     )
 }
 

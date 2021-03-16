@@ -32,7 +32,7 @@ const postRefugee = async (newRefugee) => {
         workType: newRefugee.workType,
         schedule: [],
         numWorkHours: newRefugee.numWorkHours,
-        // additionalInfo: newRefugee.additionalInfo
+        additionalInfo: newRefugee.additionalInfo
     }
 
     const request = new Request(
@@ -76,6 +76,7 @@ const RefugeeDash = () => {
                             workType={ref.workType}
                             schedule={"WIP"}
                             numWorkHours={ref.numWorkHours}
+                            additionalInfo={ref.additionalInfo}
                         ></Refugee>
                     )
                 })
@@ -146,7 +147,7 @@ const RefugeeDash = () => {
     }
 
     return (
-        <React.Fragment>
+        <div className="refugeedash-container">
             <nav className="refugeedash-nav">
                 <p>RefuTalent</p>
                 <button onClick={() => setBeingEdited(true)}>Create New Refugee</button>
@@ -155,7 +156,7 @@ const RefugeeDash = () => {
                 {renderModal()}
                 {refugees}
             </div>
-        </React.Fragment>
+        </div>
     )
 }
 
