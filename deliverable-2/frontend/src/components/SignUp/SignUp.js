@@ -67,7 +67,7 @@ function SignUp() {
             <div className="signup-element">
                 <label>Password</label>
                 <input
-                    type="text"
+                    type="password"
                     id="pwd"
                     value={account.pwd}
                     onChange={handleInput}
