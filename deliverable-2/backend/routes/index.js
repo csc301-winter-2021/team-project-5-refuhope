@@ -6,7 +6,7 @@ const path = require('path');
 const mongoose = require('../db/mongoose');
 
 // express setup
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 const app = express();
 // create application/json parser (same functionality as body-parser.json)
 app.use(express.json());

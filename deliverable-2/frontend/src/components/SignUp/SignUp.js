@@ -1,15 +1,16 @@
 import React from 'react'
 import { useState } from 'react'
+import { useHistory } from 'react-router'
 import './SignUp.css'
 
 function SignUp() {
+    const history = useHistory()
     const [account, setAccount] = useState({
         email: "",
         pwd: "",
         name: "",
+        usern: "",
         phone: "",
-        city: "",
-        prov: "",
     })
 
     const handleInput = e => {
@@ -17,7 +18,36 @@ function SignUp() {
     }
 
     const handleSignUp = e => {
-        // POST Host
+        const newUser = {
+            name: account.name,
+            phone: account.phone,
+            email: account.email,
+            username: account.usern,
+            password: account.pwd
+        }
+        const request = new Request("/api/userAdd", {
+            method: "post",
+            body: JSON.stringify(newUser),
+            headers: {
+                Accept: "application/json, text/plain, */*",
+                "Content-Type": "application/json"
+            }
+        })
+        fetch(request)
+            .then(res => {
+                if (res.status === 200) {
+                    return res.json();
+                }
+            })
+            .then(json => {
+                if (json.response){
+                    history.push("/")
+                } 
+            })
+            .catch(error => {
+                console.log(error);
+                alert("Error occured when signing up, please review and try again.")
+            });
     }
 
     return (
@@ -63,20 +93,11 @@ function SignUp() {
                 />
             </div>
             <div className="signupElement">
-                <span>City: </span>
+                <span>Username: </span>
                 <input
                     type="text"
-                    id="city"
-                    value={account.city}
-                    onChange={handleInput}
-                />
-            </div>
-            <div className="signupElement">
-                <span>Province: </span>
-                <input
-                    type="text"
-                    id="prov"
-                    value={account.prov}
+                    id="usern"
+                    value={account.usern}
                     onChange={handleInput}
                 />
             </div>
