@@ -4,12 +4,87 @@ import { useState, useEffect } from 'react'
 import Refugee, { Detail, REFUGEE_TEMPLATE } from '../Refugee/Refugee'
 import './VolunteerDash.css'
 
+/* API Calls. */
+
+const getRefugees = async () => {
+
+    const request = new Request('/api/refugeeSearch', { method: 'GET' })
+    const response = await fetch(request)
+
+    if (response.ok) {
+        const data = await response.json()
+        return data.response
+    } else {
+        return null
+    }
+}
+
+const postRefugee = async (newRefugee) => {
+
+    const body = {
+        name: newRefugee.name,
+        phone: newRefugee.phone,
+        email: newRefugee.email,
+        // Expects location to be in the form: city, province
+        city: newRefugee.location.split(",")[0],
+        // key is "prov" and not "province" due for compatability with backend. FIX IT
+        prov: newRefugee.location.split(",")[1],
+        workType: newRefugee.workType,
+        schedule: [],
+        numWorkHours: newRefugee.numWorkHours,
+        // additionalInfo: newRefugee.additionalInfo
+    }
+
+    const request = new Request(
+        '/api/refugeeAdd',
+        {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', },
+            body: JSON.stringify(body)
+        }
+    )
+    const response = await fetch(request)
+
+    return response.ok
+}
 
 const RefugeeDash = () => {
+
+    /* Setup */
 
     const [refugees, setRefugees] = useState([])
     const [beingEdited, setBeingEdited] = useState(false)
     const [newRefugee, setNewRefugee] = useState(Object.create(REFUGEE_TEMPLATE))
+
+    // The empty array argument indicates that this funciton should only be run on this component's intial render.
+    useEffect(() => {
+
+        // Apparently this IIFE is needed to avoid race conditions in rendering.
+        (async () => {
+            const refugeeList = await getRefugees()
+            if (refugeeList === null) {
+                alert("Couldn't load  Refugees.")
+            } else {
+                const refugeeComponents = refugeeList.map(ref => {
+                    return (
+                        <Refugee
+                            key={ref._id}
+                            name={ref.name}
+                            phone={ref.phone}
+                            email={ref.email}
+                            location={ref.city + ", " + ref.province}
+                            workType={ref.workType}
+                            schedule={"WIP"}
+                            numWorkHours={ref.numWorkHours}
+                        ></Refugee>
+                    )
+                })
+                setRefugees(refugeeComponents)
+            }
+        })()
+    }, [])
+
+    /* Helpers and callbacks. */
 
     const handleEdit = (event, key) => {
         // Modified attributes are first stored in the buffer.
@@ -18,40 +93,11 @@ const RefugeeDash = () => {
         setNewRefugee(updatedInfo)
     }
 
-    const postRefugee = async () => {
-
-        const body = {
-            name: newRefugee.name,
-            phone: newRefugee.phone,
-            email: newRefugee.email,
-            // Expects location to be in the form: city, province
-            city: newRefugee.location.split(",")[0],
-            // key is "prov" and not "province" due for compatability with backend. FIX IT
-            prov: newRefugee.location.split(",")[1],
-            workType: newRefugee.workType,
-            schedule: [],
-            numWorkHours: newRefugee.numWorkHours,
-            // additionalInfo: newRefugee.additionalInfo
-        }
-
-        const request = new Request(
-            '/api/refugeeAdd',
-            {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', },
-                body: JSON.stringify(body)
-            }
-        )
-        const response = await fetch(request)
-
-        return response.ok
-    }
-
     const saveEdit = (save) => {
 
         // Try to write refugee to DB.
         if (save) {
-            const successful = postRefugee()
+            const successful = postRefugee(newRefugee)
             // Refugee successfully stored in DB; create UI element.
             if (successful) {
                 let newRefugeeComp = <Refugee {...newRefugee}></Refugee>
