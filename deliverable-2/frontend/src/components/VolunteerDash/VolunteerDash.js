@@ -18,14 +18,53 @@ const RefugeeDash = () => {
         setNewRefugee(updatedInfo)
     }
 
+    const postRefugee = async () => {
+
+        const body = {
+            name: newRefugee.name,
+            phone: newRefugee.phone,
+            email: newRefugee.email,
+            // Expects location to be in the form: city, province
+            city: newRefugee.location.split(",")[0],
+            // key is "prov" and not "province" due for compatability with backend. FIX IT
+            prov: newRefugee.location.split(",")[1],
+            workType: newRefugee.workType,
+            schedule: [],
+            numWorkHours: newRefugee.numWorkHours,
+            // additionalInfo: newRefugee.additionalInfo
+        }
+
+        const request = new Request(
+            '/api/refugeeAdd',
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', },
+                body: JSON.stringify(body)
+            }
+        )
+        const response = await fetch(request)
+
+        return response.ok
+    }
+
     const saveEdit = (save) => {
+
+        // Try to write refugee to DB.
         if (save) {
-            // TODO: Create a POST request; only add new Refugee to state if status is OK.
-            let newRefugeeComp = <Refugee {...newRefugee}></Refugee>
-            setRefugees([...refugees, newRefugeeComp])
-        } else {
+            const successful = postRefugee()
+            // Refugee successfully stored in DB; create UI element.
+            if (successful) {
+                let newRefugeeComp = <Refugee {...newRefugee}></Refugee>
+                setRefugees([...refugees, newRefugeeComp])
+            } else {
+                // Write to databse failed.
+                alert("Woops! Couldn't write Refugee to DB, please try again!")
+            }
+            // Reset edit buffer.
             setNewRefugee(Object.create(REFUGEE_TEMPLATE))
         }
+
+        // Change back to non-edit mode.
         setBeingEdited(false)
     }
 
