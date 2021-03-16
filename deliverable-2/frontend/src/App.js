@@ -1,21 +1,38 @@
 import './App.css';
 
+import React from 'react'
+import { Route, Switch, BrowserRouter} from 'react-router-dom'
+
+import Login from './components/Login/Login'
+import SignUp from './components/SignUp/SignUp'
+import HostDash from './components/HostDash/HostDash'
+import VolunteerDash from './components/VolunteerDash/VolunteerDash'
+
+
 const App = () => {
+
   return (
     <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <BrowserRouter>
+        <Switch>
+          <Route
+            exact path ={["/"]}
+            render={()=><Login/>}
+          />
+          <Route
+            exact path ={["/signup"]}
+            render={()=><SignUp/>}
+          />
+          <Route
+            exact path ={["/hostdash"]}
+            render={()=> <HostDash/> }
+          />
+          <Route
+            exact path ={["/volunteerdash"]}
+            render={()=> <VolunteerDash/> }
+          />
+        </Switch>
+      </BrowserRouter>
     </div>
   )
 }
