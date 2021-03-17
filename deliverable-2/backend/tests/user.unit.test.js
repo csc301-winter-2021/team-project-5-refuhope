@@ -1,15 +1,11 @@
 const request = require("supertest");
 const express = require("express");
 const mongoose = require('mongoose')
-var bodyParser = require('body-parser');
-
-// const { User } = require("../models/user");
 
 const routes = require('../routes/user.routes')
 
 const app = express();
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.json())
 app.use(routes)
 
 beforeAll(async () => {
