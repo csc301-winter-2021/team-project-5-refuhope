@@ -1,16 +1,14 @@
 const request = require("supertest");
 const express = require("express");
-const mongoose = require('mongoose')
-var bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
 const { Refugee } = require("../models/refugee");
 
-const routes = require('../routes/refugee.routes')
+const routes = require('../routes/refugee.routes');
 
 const app = express();
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(routes)
+app.use(express.json());
+app.use(routes);
 
 beforeAll(async () => {
     const dbURL = process.env.MONGODB_URI || 'mongodb://localhost:27017/RefuTalent_Test';
