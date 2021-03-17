@@ -22,7 +22,7 @@ jobs:
     - 
       name: "Unit test"
       script: 
-        - "echo \"Running unit tests\""
+        - "cd ./deliverable-2/backend && npm test && cd../.."
     - 
       stage: Deploy
       install: skip
