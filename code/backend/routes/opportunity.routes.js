@@ -92,14 +92,9 @@ router.post("/api/opportunityAdd", (req, res) => {
   };
   // create a new opportunity assuming req follows schema
   const newOpportunity = new Opportunity({
+    ...req.body,
     poster: new ObjectID(), // TODO: once cookies are added, get poster id from session (task#32)
-    title: req.body.title,
-    additionalInfo: req.body.additionalInfo,
-    city: req.body.city,
-    province: req.body.province,
-    workType: req.body.workType,
     schedule: schedule,
-    numWorkHours: req.body.numWorkHours,
     status: "IN REVIEW" // new opportunities should be "IN REVIEW"
   });
   newOpportunity.save().then(
