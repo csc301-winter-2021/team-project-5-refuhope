@@ -6,7 +6,7 @@ sudo: required
 dist: xenial
 
 install: 
-  - "cd ./deliverable-2/frontend"
+  - "cd ./code/frontend"
   - "npm install"
   - "cd ../backend"
   - "npm install"
@@ -26,7 +26,7 @@ jobs:
     - 
       stage: Deploy
       install: skip
-      script: cd ./deliverable-2
+      script: cd ./code
       deploy: 
         - 
           api_key: $HEROKU_AUTH_TOKEN
