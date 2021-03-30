@@ -11,9 +11,9 @@ const UserSchema = new mongoose.Schema({
     trim: true,
     unique: true,
     validate: {
-		validator: validator.isEmail,
-		message: 'Non-valid email'
-	}
+      validator: validator.isEmail,
+      message: "Non-valid email"
+    }
   },
   password: {
     type: String,
@@ -23,7 +23,7 @@ const UserSchema = new mongoose.Schema({
   userType: {
     type: String,
     enum: ["HOST", "VOLUNTEER"]
-  },
+  }
 });
 
 const User = mongoose.model("User", UserSchema);

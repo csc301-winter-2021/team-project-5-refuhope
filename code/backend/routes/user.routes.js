@@ -1,4 +1,5 @@
 const express = require("express");
+const bcrypt = require("bcryptjs");
 const router = express.Router();
 
 const { ObjectID } = require("mongodb");
@@ -53,24 +54,25 @@ router.get("/api/userSearch", (req, res) => {
 });
 
 // verify login for user given email + password
-router.get("/api/login", (req, res) => {
-  const userEmail = req.query.email;
-  const userPassword = req.query.password;
-
+router.post("/api/login", (req, res) => {
+  const userEmail = req.body.email;
+  const userPassword = req.body.password;
   // basic user verification for credentials
-  // TODO: improvement needed by completing task#33 of user authentication (maybe return a promise), password encryption/decryption, update session user, etc.
+  // TODO: improvement needed by completing task#33 of user authentication (maybe return a promise), update session user, etc.
   User.findOne({ email: userEmail }).then(
     (foundUser) => {
-      // 401 error on failed login verification (or should this be a 404?)
+      // 401 error on failed login verification
       if (!foundUser) {
         res.status(401).send();
       } else {
-        // if there is a user matching email check if passwords match
-        if (foundUser.password != userPassword) {
-          res.status(401).send();
-        } else {
-          res.send({ response: foundUser });
-        }
+        // if there is a user matching email check if hashed passwords match
+        bcrypt.compare(userPassword, foundUser.password, (error, result) => {
+          if (result) {
+            res.send({ response: foundUser });
+          } else {
+            res.status(401).send({ error });
+          }
+        });
       }
     },
     (error) => {
@@ -83,7 +85,7 @@ router.get("/api/login", (req, res) => {
 
 // add a new user to db
 router.post("/api/userAdd", (req, res) => {
-  // create a new user (default to host user since refutalent volunteers share credentials)
+  // create a new user (default to host user)
   const newUser = new User({
     name: req.body.name,
     phone: req.body.phone,
@@ -92,16 +94,27 @@ router.post("/api/userAdd", (req, res) => {
     password: req.body.password,
     userType: "HOST",
   });
-  // save new user to database
-  newUser.save().then(
-    (result) => {
-      res.send({ response: result });
-    },
-    (error) => {
-      // 400 for bad request
-      res.status(400).send({ error });
-    }
-  );
+
+  // encrypt new user password with bcrypt + salt
+  const saltRounds = 10;
+  bcrypt.genSalt(saltRounds, (err, salt) => {
+    bcrypt.hash(newUser.password, salt, (error, hash) => {
+      if (error) {
+        res.status(400).send({ error });
+      }
+      newUser.password = hash;
+      // save new user to database
+      newUser.save().then(
+        (result) => {
+          res.send({ response: result });
+        },
+        (error) => {
+          // 400 for bad request
+          res.status(400).send({ error });
+        }
+      );
+    });
+  });
 });
 
 // delete user by email (might be useful)
