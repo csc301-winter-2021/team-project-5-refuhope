@@ -54,7 +54,7 @@ router.get("/api/userSearch", (req, res) => {
 });
 
 // verify login for user given email + password
-router.get("/api/login", (req, res) => {
+router.post("/api/login", (req, res) => {
   const userEmail = req.body.email;
   const userPassword = req.body.password;
   // basic user verification for credentials
