@@ -4,7 +4,6 @@ const validator = require("validator");
 const UserSchema = new mongoose.Schema({
   name: String,
   phone: String,
-  // TODO: validation for email and password credentials
   email: {
     type: String,
     required: true,
