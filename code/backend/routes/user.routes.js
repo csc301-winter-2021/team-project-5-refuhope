@@ -59,7 +59,7 @@ router.get("/api/loggedInUser", (req, res) => {
   // find the user that the given user email identifies
   User.findOne({ email: userEmail }).then(
     (foundUser) => {
-      res.send({ foundUser });
+      res.send({ loggedIn: foundUser });
     },
     (error) => {
       res.status(400).send({ error });

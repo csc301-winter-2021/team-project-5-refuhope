@@ -3,6 +3,7 @@ const router = express.Router();
 
 const { ObjectID } = require("mongodb");
 const { Opportunity } = require("../models/opportunity");
+const { User } = require("../models/user");
 
 router.get("/api/opportunityByID/:id", (req, res) => {
   const id = req.params.id;
@@ -31,7 +32,8 @@ router.get("/api/opportunityByPoster/:poster", (req, res) => {
     return res.status(404).send();
   }
   // find opportunity made by specific poster
-  Opportunity.find({ poster: posterId }).then(foundOpportunity => {
+  Opportunity.find({ poster: posterId })
+    .then((foundOpportunity) => {
       if (!foundOpportunity) {
         res.status(404).send();
       } else {
@@ -50,7 +52,8 @@ router.get("/api/opportunityByRefugee/:refugee", (req, res) => {
     return res.status(404).send();
   }
   // find opportunity matched with specific refugee
-  Opportunity.find({ matchedRefugee: refugeeId }).then(foundOpportunity => {
+  Opportunity.find({ matchedRefugee: refugeeId })
+    .then((foundOpportunity) => {
       if (!foundOpportunity) {
         res.status(404).send();
       } else {
@@ -90,19 +93,32 @@ router.post("/api/opportunityAdd", (req, res) => {
     sat: dailySchedule,
     sun: dailySchedule,
   };
-  // create a new opportunity assuming req follows schema
-  const newOpportunity = new Opportunity({
-    ...req.body,
-    poster: new ObjectID(), // TODO: once cookies are added, get poster id from session (task#32)
-    schedule: schedule,
-    status: "IN REVIEW" // new opportunities should be "IN REVIEW"
-  });
-  newOpportunity.save().then(
-    (result) => {
-      res.send({ response: result });
+
+  const userEmail = req.session.user;
+  // find the user that the given user email identifies
+  User.findOne({ email: userEmail }).then(
+    (foundUser) => {
+      if (!foundUser) {
+        res.status(404).send();
+      }
+      // create a new opportunity assuming req follows schema
+      const newOpportunity = new Opportunity({
+        ...req.body,
+        poster: foundUser.id,
+        schedule: schedule,
+        status: "IN REVIEW" // new opportunities should be "IN REVIEW"
+      });
+      newOpportunity.save().then(
+        (result) => {
+          res.send({ response: result });
+        },
+        (error) => {
+          // 400 for bad request
+          res.status(400).send({ error });
+        }
+      );
     },
     (error) => {
-      // 400 for bad request
       res.status(400).send({ error });
     }
   );
