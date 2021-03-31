@@ -17,7 +17,13 @@ function Login() {
     }
 
     const handleLogin = e => {
-        const request = new Request(`/api/login?email=${email}&password=${pwd}`, {
+        const loginCredentials = {
+            email: email,
+            password: pwd
+        };
+        const request = new Request("/api/login", {
+            method: "post",
+            body: JSON.stringify(loginCredentials),
             headers: {
                 Accept: "application/json, text/plain, */*",
                 "Content-Type": "application/json"
