@@ -53,21 +53,36 @@ router.get("/api/userSearch", (req, res) => {
   );
 });
 
+// get logged in user (this might be useful for calling in frontend when app is reloaded but session/cookie persists)
+router.get("/api/loggedInUser", (req, res) => {
+  const userEmail = req.session.user;
+  // find the user that the given user email identifies
+  User.findOne({ email: userEmail }).then(
+    (foundUser) => {
+      res.send({ foundUser });
+    },
+    (error) => {
+      res.status(400).send({ error });
+    }
+  );
+});
+
 // verify login for user given email + password
 router.post("/api/login", (req, res) => {
   const userEmail = req.body.email;
   const userPassword = req.body.password;
-  // basic user verification for credentials
-  // TODO: improvement needed by completing task#33 of user authentication (maybe return a promise), update session user, etc.
+  // authentication based on credentials
   User.findOne({ email: userEmail }).then(
     (foundUser) => {
       // 401 error on failed login verification
       if (!foundUser) {
         res.status(401).send();
       } else {
-        // if there is a user matching email check if hashed passwords match
+        // if there is a user matching email compare hashed passwords
         bcrypt.compare(userPassword, foundUser.password, (error, result) => {
           if (result) {
+            // update session
+            req.session.user = foundUser.email;
             res.send({ response: foundUser });
           } else {
             res.status(401).send({ error });
@@ -81,7 +96,16 @@ router.post("/api/login", (req, res) => {
   );
 });
 
-// TODO: Task#35 - add user routes involving session (e.g. get logged-in user, logout - destroy session)
+// destroy session on logout
+router.post("/api/logout", (req, res) => {
+  req.session.destroy((error) => {
+    if (error) {
+      res.status(500).send({ error });
+    } else {
+      res.sendStatus(200);
+    }
+  });
+});
 
 // add a new user to db
 router.post("/api/userAdd", (req, res) => {
@@ -106,6 +130,7 @@ router.post("/api/userAdd", (req, res) => {
       // save new user to database
       newUser.save().then(
         (result) => {
+          // consider updating session with user here (if new user should be directed to home page straight after registration)
           res.send({ response: result });
         },
         (error) => {

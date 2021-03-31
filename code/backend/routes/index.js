@@ -18,17 +18,24 @@ app.use(cookieParser());
 // initialize express session with cookies
 app.use(
   session({
-    key:"userId", 
     secret: "secretkey", // change this as needed
     resave: false,
     saveUninitialized: false,
     cookie: {
-      expires: 6000000,
-      httpOnly: true,
-      secure: true,
-    },
+      maxAge: 6000000,
+      httpOnly: true
+    }
   })
 );
+
+// for session debugging purposes
+// app.use((req, res, next) => {
+//     console.log(req.session);
+//     if (req.session.userId) {
+//         return res.send(req.session.userId);
+//     }
+//     next();
+// });
 
 /* API routes */
 // refugee routes
