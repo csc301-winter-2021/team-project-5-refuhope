@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
 
-import Post, { Detail, POST_TEMPLATE } from '../Post/Post'
+import Post from '../Post/Post'
 import Form from "../Form/Form"
 import './HostDash.css'
 
@@ -70,24 +70,7 @@ const HostDash = () => {
         })()
     }, [])
 
-    const save = (formData) => {
-
-        const newPost = {
-            title: formData.title,
-            // New posts are always in review
-            // status: "STATUS",
-            // Right now we must create some random ID for the host/poster.
-            // host: "HOST",
-            workType: formData.workType,
-            city: formData.city,
-            province: formData.province,
-            schedule: formData.schedule,
-            numWorkHours: formData.hours,
-            additionalInfo: formData.additionalInfo,
-            // TODO: Add multi-select for subjects.
-            subjects: formData.subject,
-            gradeLevel: formData.level,
-        }
+    const save = (newPost) => {
 
         // Try to write Post to DB.
         const successful = postOpportunity(newPost)
@@ -107,9 +90,12 @@ const HostDash = () => {
     }
 
     const renderModal = () => {
+
         if (beingEdited) {
             return (
-                <Form formType="OPPORTUNITY" save={save} cancel={cancel} />
+                <div className="hostdash-modal-back">
+                    <Form formType="OPPORTUNITY" save={save} cancel={cancel} />
+                </div>
             )
         }
     }
