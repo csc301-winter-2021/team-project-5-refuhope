@@ -4,6 +4,7 @@ const router = express.Router();
 const { ObjectID } = require("mongodb");
 const { Opportunity } = require("../models/opportunity");
 const { User } = require("../models/user");
+const { constructScheduleQuery } = require("./helpers");
 
 router.get("/api/opportunityByID/:id", (req, res) => {
   const id = req.params.id;
@@ -66,9 +67,23 @@ router.get("/api/opportunityByRefugee/:refugee", (req, res) => {
 });
 
 // get all opportunities
+// `schedule` query should look like: mon:11-14,15-18;tues:10-14
+// `subjects` query should look like: MATH,BIOLOGY,HISTORY
 router.get("/api/opportunitySearch", (req, res) => {
-  // TODO: Add support to query opportunities by various fields (task#31)
-  Opportunity.find().then(
+  const { schedule, subjects } = req.query;
+  const filterQuery = req.query;
+  delete filterQuery.schedule;
+  delete filterQuery.subjects;
+  
+  // handle filtering by schedule
+  if (schedule) {
+    filterQuery.$or = constructScheduleQuery(schedule);
+  }
+  // handle filtering by subject
+  if (subjects) {
+    filterQuery.subjects = {$in: subjects.split(",")}
+  }
+  Opportunity.find({ ...filterQuery }).then(
     (allOpportunities) => {
       res.send({ response: allOpportunities });
     },
