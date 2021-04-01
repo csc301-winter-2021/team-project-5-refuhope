@@ -8,19 +8,19 @@ import './Form.css'
 const initialState = {
     name: "",
     email: "",
+    phone: "",
     title: "",
     city: "",
     province: "",
     schedule: "",
     hours: "",
-    workType: "",
+    workType: "GROCERIES",
     status: "",
     additionalInfo: "",
     hasCar: false,
     hasPhone: false,
-    subject: "",
-    level: "",
-    host: "",
+    subject: "MATH",
+    level: "1"
 }
 
 /**
@@ -29,9 +29,7 @@ const initialState = {
  * 
  * @param {String} formType     Determines the fields of the work (second) form. 
  *                              Must be "REFUGEE" or "OPPORTUNITY"
- * @param {Function} save       Callback that is executed when the form is saved. The entire
- *                              formValues state object will be passed in as its argument. It is up
- *                              to the save function to pick and choose the attributes it needs.
+ * @param {Function} save       Callback that is executed when the form is saved. 
  * @param {Function} cancel     Callback that is executed when the cancel button is pressed.
  * 
  * 
@@ -44,7 +42,6 @@ const Form = ({ formType, save, cancel }) => {
     const changePage = (incr) => {
         let newPage = Math.abs(page + incr) % 2
         setPage(newPage)
-        console.log(formValues)
     }
 
     const renderFormPage = () => {
@@ -63,11 +60,43 @@ const Form = ({ formType, save, cancel }) => {
         setFormValues(updatedInfo)
     }
 
+    const saveForm = () => {
+
+        const newObject = {
+            workType: formValues.workType,
+            city: formValues.city,
+            schedule: formValues.schedule,
+            numWorkHours: formValues.hours,
+            additionalInfo: formValues.additionalInfo,
+        }
+
+        if (formType === "REFUGEE") {
+            newObject.prov = formValues.province
+            newObject.name = formValues.name
+            newObject.email = formValues.email
+            newObject.phone = formValues.phone
+        } else if (formType === "OPPORTUNITY") {
+            newObject.province = formValues.province
+            newObject.title = formValues.title
+        }
+
+        if (formValues.workType === "TUTORING") {
+            newObject.subjects = formValues.subject
+            newObject.gradeLevel = formValues.level
+        } else if (formValues.workType === "GROCERIES") {
+            newObject.hasCar = formValues.hasCar
+            newObject.hasPhone = formValues.hasPhone
+        }
+
+        console.log(newObject)
+        save(newObject)
+    }
+
     return (
         <div className="form-container">
             {/* Save/Cancel buttons */}
             <div className="form-btn-tray-top">
-                <button onClick={(e) => save(formValues)}>Save</button>
+                <button onClick={(e) => saveForm()}>Save</button>
                 <button onClick={(e) => cancel()}>Cancel</button>
             </div>
             {/* Conditional rendering of the form's fields. */}
@@ -97,10 +126,6 @@ const Details = ({ formType, handleEdit, ...props }) => {
 
     return (
         <div>
-            {/* 
-                The only difference between refugee and opportunity forms is the header and 
-                title/name fields.
-            */}
             {formType === "REFUGEE" ?
                 // If formType is "REFUGEE", remove title field and add name and email fields.
                 <React.Fragment>
@@ -112,13 +137,28 @@ const Details = ({ formType, handleEdit, ...props }) => {
                         value={props.name}
                         onChange={e => handleEdit(e.target.id, e.target.value)}
                     ></input>
-                    <p className="form-label">Email</p>
-                    <input
-                        id="email"
-                        className="form-detail"
-                        value={props.email}
-                        onChange={e => handleEdit(e.target.id, e.target.value)}
-                    ></input>
+                    <div className="form-location-tray">
+                        <div>
+                            <p className="form-label">Email</p>
+                            <input
+                                id="email"
+                                className="form-detail"
+                                value={props.email}
+                                onChange={e => handleEdit(e.target.id, e.target.value)}
+                            ></input>
+                        </div>
+                        <p></p>
+                        <div>
+                            <p className="form-label">Phone</p>
+                            <input
+                                id="phone"
+                                className="form-detail"
+                                value={props.phone}
+                                onChange={e => handleEdit(e.target.id, e.target.value)}
+                            ></input>
+                        </div>
+                    </div>
+
                 </React.Fragment>
                 :
                 // formType is "OPPORTUNITY"; remove name and email fields, and add title field.
