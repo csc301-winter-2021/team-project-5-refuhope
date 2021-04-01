@@ -67,7 +67,7 @@ const Form = ({ formType, save, cancel }) => {
         <div className="form-container">
             {/* Save/Cancel buttons */}
             <div className="form-btn-tray-top">
-                <button onClick={(e) => save()}>Save</button>
+                <button onClick={(e) => save(formValues)}>Save</button>
                 <button onClick={(e) => cancel()}>Cancel</button>
             </div>
             {/* Conditional rendering of the form's fields. */}
@@ -257,7 +257,7 @@ const GroceryOpportunity = ({ handleEdit, ...props }) => {
  */
 const TutoringOpportunity = ({ handleEdit, ...props }) => {
 
-    const SUBJECTS = ["English", "Math", "Biology", "Chemistry", "Physics", "History", "Social Studies", "Geography"]
+    const SUBJECTS = ["MATH", "BIOLOGY", "CHEMISTRY", "PHYSICS", "ENGLISH", "SOCIAL STUDIES", "HISTORY", "GEOGRAPHY", "COMPUTER SCIENCE"]
     const HIGHEST_GRADE = 12
 
     const generateLevels = () => {
