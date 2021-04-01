@@ -1,0 +1,84 @@
+.form-container{
+    display: flex;
+    flex-direction: column;
+
+    width: 50%;
+    max-width: 600px;
+    padding: 2rem;
+    margin: auto;
+
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0px 5px 10px 0px rgb(138 134 138);
+
+    margin-top: 2rem;
+}
+
+.form-header {
+    margin: auto;
+    margin-bottom: 1rem;
+    width: 100%;
+    padding-bottom: 1rem;
+
+    color: rgb(110, 110, 110);
+    font-family: Verdana;
+    font-size: 2rem;
+    text-align: center;
+
+    box-sizing: border-box;
+    border-bottom: 4px rgb(200, 200, 200) solid;
+}
+
+.form-label, .form-detail, .form-text-area, 
+.form-drop-menu, .form-drop-option {
+    margin: 0.5rem auto;
+    width: 100%;
+
+    color: rgb(110, 110, 110);
+    font-family: Verdana;
+    font-size: 1.1rem;
+    text-align: left;
+}
+.form-detail, .form-text-area, .form-drop-menu, .form-drop-option{
+    box-sizing: border-box;
+    border: 1px rgb(200, 200, 200) solid;
+    padding: 0.75rem;
+}
+.form-label {
+    color: rgb(150, 150, 150);
+    margin-bottom: 0;
+}
+.form-text-area {
+    height: 230px;
+}
+
+.form-location-tray {
+    display: flex;
+    justify-content: space-between;
+}
+.form-location-tray p {
+    flex-grow: 1;
+}
+.form-location-tray div {
+    flex-grow: 2;
+}
+
+.form-btn-tray {
+    display: flex;
+    flex-direction: row-reverse;
+    align-content: center;
+    justify-content: center;
+    margin-top: 1rem;
+    width: 100%;
+}
+.form-btn-tray-top {
+    display: flex;
+    flex-direction: row-reverse;
+    margin-bottom: 2rem;
+    width: 100%;
+}
+.form-btn-tray button, .form-btn-tray-top button {
+    padding: 0.5rem 1rem;
+    margin-left: 0.5rem;
+    width: 75px;
+}
