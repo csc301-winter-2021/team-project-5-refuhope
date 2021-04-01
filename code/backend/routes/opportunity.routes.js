@@ -3,6 +3,7 @@ const router = express.Router();
 
 const { ObjectID } = require("mongodb");
 const { Opportunity } = require("../models/opportunity");
+const { constructScheduleQuery } = require("./helpers");
 
 router.get("/api/opportunityByID/:id", (req, res) => {
   const id = req.params.id;
@@ -66,29 +67,14 @@ router.get("/api/opportunityByRefugee/:refugee", (req, res) => {
 // `schedule` query should look like: mon:11-14,15-18;tues:10-14
 // `subjects` query should look like: MATH,BIOLOGY,HISTORY
 router.get("/api/opportunitySearch", (req, res) => {
-  // TODO: Add support to query opportunities by various fields (task#31)
   const { schedule, subjects } = req.query;
-  filterQuery = req.query;
+  const filterQuery = req.query;
   delete filterQuery.schedule;
   delete filterQuery.subjects;
   
   // handle filtering by schedule
   if (schedule) {
-    scheduleOverlapQuery = []
-    schedMongoQuery = schedule.split(";").forEach((daySched) => {
-      const ind = daySched.indexOf(":")
-      const day = daySched.substring(0, ind);
-      daySched.substring(ind+1).split(",").forEach((interval) => {
-        const start = Number.parseInt(interval.split("-")[0]);
-        const end = Number.parseInt(interval.split("-")[1]);
-
-        scheduleOverlapQuery.push({ $and: [
-          {[`schedule.${day}.hours.start`]: {$lte: end}},
-          {[`schedule.${day}.hours.end`]: {$gte: start}}
-        ]});
-      });
-    });
-    filterQuery.$or = scheduleOverlapQuery
+    filterQuery.$or = constructScheduleQuery(schedule);
   }
   // handle filtering by subject
   if (subjects) {

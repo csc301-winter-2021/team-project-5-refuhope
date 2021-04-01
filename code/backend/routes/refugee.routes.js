@@ -3,6 +3,8 @@ const router = express.Router();
 
 const { ObjectID } = require("mongodb");
 const { Refugee } = require("../models/refugee");
+const { Opportunity } = require("../models/opportunity");
+const { constructScheduleQuery } = require("./helpers");
 
 // get refugee by id
 router.get("/api/refugeeByID/:id", (req, res) => {
@@ -37,11 +39,60 @@ router.get("/api/refugeeSearch/:name", (req, res) => {
 // get all registered refugees (useful for refugee dashboard page)
 router.get("/api/refugeeSearch", (req, res) => {
 	// find all refugees registered in db and send bad request on failure
-	Refugee.find().then((allRefugees) => {
+	const { schedule } = req.query;
+	const filterQuery = req.query;
+  delete filterQuery.schedule;
+
+	if (schedule) {
+    filterQuery.$or = constructScheduleQuery(schedule);
+  }
+	Refugee.find({ ...filterQuery }).then((allRefugees) => {
 		res.send({ response: allRefugees })
 	}, (error) => {
 		res.status(400).send({ error })
 	});
+});
+
+router.get("/api/refugeeMatches", async (req, res) => {
+	const { match } = req.query;
+	const filterQuery = req.query;
+	delete filterQuery.match;
+
+	let matchedRefugees;
+	if (match) {
+		if (!ObjectID.isValid(match)) {
+			res.status(400).send({ error: "Invalid ID for `match` field" });
+			return;
+		}
+		matchedRefugees = await Refugee.aggregate([
+			{
+				$lookup: {
+					from: 'opportunities',
+					localField: '_id',
+					foreignField: 'matchedRefugee',
+					as: 'opportunity'
+				}
+			},
+			{ $unwind: '$opportunity' },
+			{ $match: { ["opportunity._id"]: new ObjectID(match) } },
+			{ $unset: "opportunity" }
+		]);
+	} else {
+		matchedRefugees = await Refugee.aggregate([
+			{
+				$lookup: {
+					from: 'opportunities',
+					localField: '_id',
+					foreignField: 'matchedRefugee',
+					as: 'opportunity'
+				}
+			},
+			{ $match: { opportunity: { $size: 0 } } },
+			{ $unset: "opportunity" }
+		]);
+	}
+
+	res.send({ response: matchedRefugees });
 });
 
 // add a new refugee to db 
