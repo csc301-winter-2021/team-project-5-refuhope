@@ -12,7 +12,7 @@ const initialState = {
     title: "",
     city: "",
     province: "",
-    schedule: "",
+    schedule: [["",""], ["",""], ["", ""], ["", ""], ["", ""], ["", ""], ["", ""]],
     hours: "",
     workType: "GROCERIES",
     status: "",
@@ -40,13 +40,15 @@ const Form = ({ formType, save, cancel }) => {
     const [formValues, setFormValues] = useState(initialState)
 
     const changePage = (incr) => {
-        let newPage = Math.abs(page + incr) % 2
+        let newPage = Math.abs(page + incr) % 3
         setPage(newPage)
     }
 
     const renderFormPage = () => {
         if (page === 0) {
             return <Details formType={formType} handleEdit={handleEdit}  {...formValues} />
+        }else if (page === 1) {
+            return <ScheduleDetails formType={formType} handleEdit={handleEdit}  {...formValues} />
         } else if (formValues.workType === "TUTORING") {
             return <TutoringOpportunity handleEdit={handleEdit} {...formValues} />
         } else {
@@ -56,7 +58,15 @@ const Form = ({ formType, save, cancel }) => {
 
     const handleEdit = (key, value) => {
         let updatedInfo = { ...formValues }
-        updatedInfo[key] = value
+        if (key.includes("schedule")) {
+            let position = 0
+            if (key.includes("end")) {
+                position = 1
+            }
+            updatedInfo["schedule"][parseInt(key)][position] = value
+        } else {
+            updatedInfo[key] = value
+        }
         setFormValues(updatedInfo)
     }
 
@@ -123,7 +133,6 @@ const Form = ({ formType, save, cancel }) => {
  * within the Details component.
  */
 const Details = ({ formType, handleEdit, ...props }) => {
-
     return (
         <div>
             {formType === "REFUGEE" ?
@@ -196,14 +205,6 @@ const Details = ({ formType, handleEdit, ...props }) => {
                 </div>
             </div>
 
-            <p className="form-label">Schedule</p>
-            <input
-                id="schedule"
-                className="form-detail"
-                value={props.schedule}
-                onChange={e => handleEdit(e.target.id, e.target.value)}
-            ></input>
-
             <p className="form-label">Work Hours</p>
             <input
                 id="hours"
@@ -223,6 +224,78 @@ const Details = ({ formType, handleEdit, ...props }) => {
                 <option className="form-drop-option" value="GROCERIES">GROCERIES</option>
                 <option className="form-drop-option" value="TUTORING">TUTORING</option>
             </select>
+        </div>
+    )
+}
+
+/**
+ * Generates the schedule related fields needed to create a new Refugee or Opportunity.
+ * 
+ * @param {String} formType     Must be one of "REFUGEE" or "OPPORTUNITY".
+ * @param {Function} handleEdit Callback that updates the state of caller component (Form) according
+ *                              to the specified key,value pair.
+ * @param {Object} props        A copy of the attributes of the formValues state of the Form        
+ *                              component.
+ * 
+ * Note that these arguments are actually passed in as a combined object, but are de-strucutred
+ * within the Details component.
+ */
+ const ScheduleDetails = ({ formType, handleEdit, ...props }) => {
+    return (
+        <div>
+            <p className="form-header">Opportunity Schedule</p>
+
+            <p className="form-label">Schedule</p>
+            <ScheduleDetail handleEdit={handleEdit} day={"0"}  {...props} />
+            <ScheduleDetail handleEdit={handleEdit} day={"1"}  {...props} />
+            <ScheduleDetail handleEdit={handleEdit} day={"2"}  {...props} />
+            <ScheduleDetail handleEdit={handleEdit} day={"3"}  {...props} />
+            <ScheduleDetail handleEdit={handleEdit} day={"4"}  {...props} />
+            <ScheduleDetail handleEdit={handleEdit} day={"5"}  {...props} />
+            <ScheduleDetail handleEdit={handleEdit} day={"6"}  {...props} />
+
+        </div>
+    )
+}
+
+/**
+ * Generates the schedule related fields of a day needed to create a new Refugee or Opportunity.
+ * 
+ * @param {Function} handleEdit Callback that updates the state of caller component (Form) according
+ *                              to the specified key,value pair.
+ * @param {String} day          Determines day of the week the fields are related to.
+ * @param {Object} props        A copy of the attributes of the formValues state of the Form        
+ *                              component.
+ * 
+ * Note that these arguments are actually passed in as a combined object, but are de-strucutred
+ * within the Details component.
+ */
+ const ScheduleDetail = ({ handleEdit, day, ...props }) => {
+    const week = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"]
+    
+    return (
+        <div>
+            <div className="form-time-tray">
+                <p> { week[parseInt(day)] } </p>
+                {/* Date Start Interval*/}
+                <input 
+                    id={`${day}-schedule-start`} 
+                    className="form-time"
+                    type="time" 
+                    value={props.schedule[parseInt(day)][0]}
+                    onChange={(e) => handleEdit(e.target.id, e.target.value)}>    
+                </input>
+                <span> </span>
+                {/* Date End Interval */}
+                <input 
+                    id={`${day}-schedule-end`} 
+                    className="form-time" 
+                    type="time" 
+                    value={props.schedule[parseInt(day)][1]}
+                    onChange={(e) => handleEdit(e.target.id, e.target.value)}>
+                </input>
+            </div>
+
         </div>
     )
 }
