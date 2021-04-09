@@ -3,11 +3,11 @@ const router = express.Router();
 
 const { ObjectID } = require("mongodb");
 const { Refugee } = require("../models/refugee");
-const { Opportunity } = require("../models/opportunity");
-const { constructScheduleQuery } = require("./helpers");
+// const { Opportunity } = require("../models/opportunity");
+const { constructScheduleQuery, processId } = require("./helpers");
 
 // get refugee by id
-router.get("/api/refugeeByID/:id", (req, res) => {
+router.get("/api/refugees/:id", (req, res) => {
   const id = req.params.id;
   // check if id is valid
   if (!ObjectID.isValid(id)) {
@@ -27,26 +27,18 @@ router.get("/api/refugeeByID/:id", (req, res) => {
     });
 });
 
-// get refugee with specified name in search
-router.get("/api/refugeeSearch/:name", (req, res) => {
-  const refugeeName = req.params.name;
-  // find one refugee with given name and send bad request on failure
-  Refugee.findOne({ name: refugeeName }).then(
-    (foundRefugee) => {
-      res.send({ response: foundRefugee });
-    },
-    (error) => {
-      res.status(400).send({ error });
-    }
-  );
-});
-
 // get all registered refugees (useful for refugee dashboard page)
-router.get("/api/refugeeSearch", (req, res) => {
+router.get("/api/refugees", (req, res) => {
   // find all refugees registered in db and send bad request on failure
   const { schedule } = req.query;
   const filterQuery = req.query;
   delete filterQuery.schedule;
+
+  try {
+    processId("_id", filterQuery._id, filterQuery);
+  } catch (e) {
+    return res.status(400).send({ error: e.message });
+  }
 
   if (schedule) {
     filterQuery.$or = constructScheduleQuery(schedule);
@@ -61,7 +53,7 @@ router.get("/api/refugeeSearch", (req, res) => {
   );
 });
 
-router.get("/api/refugeeMatches", async (req, res) => {
+router.get("/api/refugees/matches", async (req, res) => {
   const { match } = req.query;
   const filterQuery = req.query;
   delete filterQuery.match;
@@ -104,7 +96,7 @@ router.get("/api/refugeeMatches", async (req, res) => {
 });
 
 // add a new refugee to db
-router.post("/api/refugeeAdd", (req, res) => {
+router.post("/api/refugees", (req, res) => {
   const dailySchedule = {
     available: false,
     hours: [],

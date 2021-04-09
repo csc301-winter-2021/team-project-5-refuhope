@@ -1,3 +1,5 @@
+const { ObjectID } = require("mongodb");
+
 const constructScheduleQuery = (schedule) => {
   scheduleOverlapQuery = []
   schedMongoQuery = schedule.split(";").forEach((daySched) => {
@@ -16,4 +18,13 @@ const constructScheduleQuery = (schedule) => {
   return scheduleOverlapQuery
 }
 
-module.exports = { constructScheduleQuery };
+const processId = (key, value, queryObj) => {
+  if (value) {
+    if (!ObjectID.isValid(value)) {
+      throw new Error(`Invalid ID for ${key} field.`);
+    }
+    queryObj[key] = new ObjectID(value);
+  }
+}
+
+module.exports = { constructScheduleQuery, processId };

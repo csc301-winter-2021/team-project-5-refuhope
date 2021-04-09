@@ -9,7 +9,7 @@ import './VolunteerDash.css'
 
 const getRefugees = async () => {
 
-    const request = new Request('/api/refugeeSearch', { method: 'GET' })
+    const request = new Request('/api/refugees', { method: 'GET' })
     const response = await fetch(request)
 
     if (response.ok) {
@@ -23,7 +23,7 @@ const getRefugees = async () => {
 const postRefugee = async (newRefugee) => {
 
     const request = new Request(
-        '/api/refugeeAdd',
+        '/api/refugees',
         {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', },
