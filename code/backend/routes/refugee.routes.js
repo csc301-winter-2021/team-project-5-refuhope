@@ -113,15 +113,8 @@ router.post("/api/refugees", (req, res) => {
   };
   // create a new refugee assuming req follows schema
   const newRefugee = new Refugee({
-    name: req.body.name,
-    phone: req.body.phone,
-    email: req.body.email,
-    city: req.body.city,
-    province: req.body.prov,
-    additionalInfo: req.body.additionalInfo,
-    workType: req.body.workType,
+    ...req.body,
     schedule: refugeeSchedule,
-    numWorkHours: req.body.numWorkHours,
   });
   // save new refugee to DB
   newRefugee.save().then(
@@ -135,6 +128,16 @@ router.post("/api/refugees", (req, res) => {
     }
   );
 });
+
+// update existing refugee information
+// router.patch("/api/refugees", (req, res) => {
+
+// });
+
+// delete an existing refugee by id from db
+// router.delete("/api/refugees/:id", (req, res) => {
+
+// });
 
 // export the router
 module.exports = router;
