@@ -9,7 +9,7 @@ import './HostDash.css'
 
 const getOpportunities = async () => {
 
-    const request = new Request('/api/opportunitySearch', { method: 'GET' })
+    const request = new Request('/api/opportunities', { method: 'GET' })
     const response = await fetch(request)
 
     if (response.ok) {
@@ -23,7 +23,7 @@ const getOpportunities = async () => {
 const postOpportunity = async (newPost) => {
 
     const request = new Request(
-        '/api/opportunityAdd',
+        '/api/opportunities',
         {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', },

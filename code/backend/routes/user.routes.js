@@ -6,7 +6,7 @@ const { ObjectID } = require("mongodb");
 const { User } = require("../models/user");
 
 // get host user by id
-router.get("/api/userByID/:id", (req, res) => {
+router.get("/api/users/:id", (req, res) => {
   const id = req.params.id;
   // check if id is valid
   if (!ObjectID.isValid(id)) {
@@ -26,22 +26,8 @@ router.get("/api/userByID/:id", (req, res) => {
     });
 });
 
-// get registered user with email if it exists
-router.get("/api/userSearch/:email", (req, res) => {
-  const searchedEmail = req.params.email;
-  // find the user that the given email identifies
-  User.findOne({ email: searchedEmail }).then(
-    (foundUser) => {
-      res.send({ response: foundUser });
-    },
-    (error) => {
-      res.status(400).send({ error });
-    }
-  );
-});
-
 // get all registered users in the system - mostly good for debugging
-router.get("/api/userSearch", (req, res) => {
+router.get("/api/users", (req, res) => {
   // find all users registered in db and send bad request on failure
   User.find().then(
     (allUsers) => {
@@ -54,7 +40,7 @@ router.get("/api/userSearch", (req, res) => {
 });
 
 // get logged in user (this might be useful for calling in frontend when app is reloaded but session/cookie persists)
-router.get("/api/loggedInUser", (req, res) => {
+router.get("/api/users/loggedIn", (req, res) => {
   const userEmail = req.session.user;
   // find the user that the given user email identifies
   User.findOne({ email: userEmail }).then(
@@ -108,7 +94,7 @@ router.post("/api/logout", (req, res) => {
 });
 
 // add a new user to db
-router.post("/api/userAdd", (req, res) => {
+router.post("/api/users", (req, res) => {
   // create a new user (default to host user)
   const newUser = new User({
     name: req.body.name,
@@ -142,11 +128,14 @@ router.post("/api/userAdd", (req, res) => {
   });
 });
 
-// delete user by email (might be useful)
-router.delete("/api/userDelete/:email", (req, res) => {
-  const userEmail = req.params.email;
-  // find and delete user associated to specified email
-  User.findOneAndDelete({ email: userEmail }).then(
+// delete user by id
+router.delete("/api/users/:id", (req, res) => {
+  const userId = req.params.id;
+  if (!ObjectID.isValid(userId)) {
+    return res.status(404).send();
+  }
+
+  User.findByIdAndDelete(userId).then(
     (deletedUser) => {
       res.send({ response: deletedUser });
     },
