@@ -135,9 +135,21 @@ router.post("/api/refugees", (req, res) => {
 // });
 
 // delete an existing refugee by id from db
-// router.delete("/api/refugees/:id", (req, res) => {
+router.delete("/api/refugees/:id", (req, res) => {
+  const refugeeId = req.params.id;
+  if (!ObjectID.isValid(refugeeId)) {
+    return res.status(404).send();
+  }
 
-// });
+  Refugee.findByIdAndDelete(refugeeId).then(
+    (deletedRefugee) => {
+      res.send({ response: deletedRefugee });
+    },
+    (error) => {
+      res.status(400).send({ error });
+    }
+  );
+});
 
 // export the router
 module.exports = router;
