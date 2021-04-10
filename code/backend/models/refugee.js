@@ -6,35 +6,35 @@ const WORK_TYPES = ["TUTORING", "GROCERIES"];
 const RefugeeSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
+    required: true
   },
   phone: {
     type: String,
-    required: true,
+    required: true
   },
   email: {
     type: String,
-    required: true,
+    required: true
   },
   city: {
     type: String,
-    required: true,
+    required: true
   },
   province: {
     type: String,
-    required: true,
+    required: true
   },
   workType: {
     type: String,
     enum: WORK_TYPES,
-    required: true,
+    required: true
   },
   additionalInfo: {
     type: String,
-    maxlength: 500,
+    maxlength: 500
   },
   schedule: ScheduleSchema,
-  numWorkHours: Number,
+  numWorkHours: Number
 });
 
 const Refugee = mongoose.model("Refugee", RefugeeSchema);
