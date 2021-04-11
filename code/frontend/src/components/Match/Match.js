@@ -8,7 +8,7 @@ import './Match.css'
 /* API Calls. */
 const getPost = async (props) => {
     if (props === undefined)
-        return
+        return null
     if (props.location.postDetails === undefined)
         return null
     const id = props.location.postID
