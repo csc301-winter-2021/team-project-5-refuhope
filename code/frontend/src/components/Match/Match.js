@@ -6,8 +6,13 @@ import Post from '../Post/Post'
 import './Match.css'
 
 /* API Calls. */
-const getPost = async () => {
-    const request = new Request('"/api/opportunityByID/:id"', { method: 'GET' })
+const getPost = async (props) => {
+    if (props === undefined)
+        return
+    if (props.location.postDetails === undefined)
+        return null
+    const id = props.location.postID
+    const request = new Request(`/api/opportunityByID/${id}`, { method: 'GET' })
     const response = await fetch(request)
 
     if (response.ok) {
@@ -49,22 +54,19 @@ const Match = () => {
             if (postInfo === null) {
                 alert("Couldn't load Post.")
             } else {
-                const postComponents = postInfo.map(p => {
-                    return ( 
+                const postComponent = 
                         <Post
-                            key={p._id}
-                            title={p.title}
-                            status={p.status}
-                            host={p.poster}
-                            workType={p.workType}
-                            location={p.city + ", " + p.province}
+                            key={postInfo._id}
+                            title={postInfo.title}
+                            status={postInfo.status}
+                            host={postInfo.poster}
+                            workType={postInfo.workType}
+                            location={postInfo.city + ", " + postInfo.province}
                             schedule={"WIP"}
-                            hours={p.numWorkHours}
-                            additionalInfo={p.additionalInfo}
+                            hours={postInfo.numWorkHours}
+                            additionalInfo={postInfo.additionalInfo}
                         ></Post>
-                    )
-                })
-                setPost(postComponents)
+                setPost(postComponent)
             }
             const refugeeList = await getRefugees()
             if (refugeeList === null) {
@@ -95,7 +97,7 @@ const Match = () => {
         <div className="match-container">
             <nav className="match-nav">
                 <p>RefuTalent</p>
-                <form onSubmit={updateMatch()}>
+                <form onSubmit={updateMatch}>
                     <label>
                     Match:
                     <input type="text" name="RefugeeID"/>
