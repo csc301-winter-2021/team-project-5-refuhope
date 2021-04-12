@@ -9,6 +9,8 @@ import './Match.css'
 const getPost = async (props) => {
     if (props === undefined)
         return null
+    if (props.location === undefined)
+        return null
     if (props.location.postDetails === undefined)
         return null
     const id = props.location.postID
@@ -39,7 +41,7 @@ const getRefugees = async () => {
 
 const updateMatch = async () => {} // Server call
 
-const Match = () => {
+const Match = (props) => {
 
     /* Setup */
     const [post, setPost] = useState([])
@@ -49,8 +51,8 @@ const Match = () => {
     useEffect(() => {
 
         // Apparently this IIFE is needed to avoid race conditions in rendering.
-        (async () => {
-            const postInfo = await getPost()
+        (async () => {             
+            const postInfo = await getPost(props)
             if (postInfo === null) {
                 alert("Couldn't load Post.")
             } else {
