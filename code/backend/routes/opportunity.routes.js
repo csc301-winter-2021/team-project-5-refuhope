@@ -63,7 +63,7 @@ router.get("/api/opportunities", (req, res) => {
 });
 
 
-router.post("/api/opportunityAdd", (req, res) => {
+router.post("/api/opportunities", (req, res) => {
   // create dailySchedule objects for each weekday based on input, storing hour of interval
   const dailySchedules = req.body.schedule.map(day => {
     if (day.includes('')){
