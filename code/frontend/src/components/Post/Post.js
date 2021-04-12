@@ -76,7 +76,7 @@ const Post = (props) => {
             return (
                 <div className="post-card-btn-tray">
                     <button onClick={() => setBeingEdited(true)}>Edit</button>
-                    <Link to={{pathname: `/match`, state: { postID: 'test'}}}>Match</Link>
+                    <Link to={{pathname: `/match`, state: { postID: props._id}}}>Match</Link>
                 </div>
             )
         }
