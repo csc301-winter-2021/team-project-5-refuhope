@@ -4,9 +4,9 @@ const router = express.Router();
 const { ObjectID } = require("mongodb");
 const { Opportunity } = require("../models/opportunity");
 const { User } = require("../models/user");
-const { constructScheduleQuery } = require("./helpers");
+const { constructScheduleQuery, processId } = require("./helpers");
 
-router.get("/api/opportunityByID/:id", (req, res) => {
+router.get("/api/opportunities/:id", (req, res) => {
   const id = req.params.id;
   // check if id is valid
   if (!ObjectID.isValid(id)) {
@@ -26,55 +26,24 @@ router.get("/api/opportunityByID/:id", (req, res) => {
     });
 });
 
-router.get("/api/opportunityByPoster/:poster", (req, res) => {
-  const posterId = req.params.poster;
-  // check if id is valid
-  if (!ObjectID.isValid(posterId)) {
-    return res.status(404).send();
-  }
-  // find opportunity made by specific poster
-  Opportunity.find({ poster: posterId })
-    .then((foundOpportunity) => {
-      if (!foundOpportunity) {
-        res.status(404).send();
-      } else {
-        res.send({ response: foundOpportunity });
-      }
-    })
-    .catch((error) => {
-      res.status(400).send({ error });
-    });
-});
-
-router.get("/api/opportunityByRefugee/:refugee", (req, res) => {
-  const refugeeId = req.params.refugee;
-  // check if id is valid
-  if (!ObjectID.isValid(refugeeId)) {
-    return res.status(404).send();
-  }
-  // find opportunity matched with specific refugee
-  Opportunity.find({ matchedRefugee: refugeeId })
-    .then((foundOpportunity) => {
-      if (!foundOpportunity) {
-        res.status(404).send();
-      } else {
-        res.send({ response: foundOpportunity });
-      }
-    })
-    .catch((error) => {
-      res.status(400).send({ error });
-    });
-});
-
 // get all opportunities
 // `schedule` query should look like: mon:11-14,15-18;tues:10-14
 // `subjects` query should look like: MATH,BIOLOGY,HISTORY
-router.get("/api/opportunitySearch", (req, res) => {
+router.get("/api/opportunities", (req, res) => {
   const { schedule, subjects } = req.query;
   const filterQuery = req.query;
   delete filterQuery.schedule;
   delete filterQuery.subjects;
-  
+
+  // handle filtering by an ID
+  try {
+    processId("_id", filterQuery._id, filterQuery);
+    processId("poster", filterQuery.poster, filterQuery);
+    processId("matchedRefugee", filterQuery.matchedRefugee, filterQuery);
+  } catch (e) {
+    return res.status(400).send({ error: e.message });
+  }
+
   // handle filtering by schedule
   if (schedule) {
     filterQuery.$or = constructScheduleQuery(schedule);
@@ -92,6 +61,7 @@ router.get("/api/opportunitySearch", (req, res) => {
     }
   );
 });
+
 
 router.post("/api/opportunityAdd", (req, res) => {
   // create dailySchedule objects for each weekday based on input, storing hour of interval
