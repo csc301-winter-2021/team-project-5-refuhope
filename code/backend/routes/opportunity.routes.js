@@ -64,26 +64,6 @@ router.get("/api/opportunities", (req, res) => {
 
 
 router.post("/api/opportunities", (req, res) => {
-  // commented out for now...
-  // create dailySchedule objects for each weekday based on input, storing hour of interval
-  // const dailySchedules = req.body.schedule.map(day => {
-  //   if (day.includes('')){
-  //     return({ available: false, hours: [] })
-  //   } else {
-  //     return({ available: true, hours: [{ start: parseInt(day[0]), end: parseInt(day[1]) }] })
-  //   }
-  // })
-  // // create and populate a schedule (TODO: task#27) - open to feedback for how schedule should be passed/initialized
-  // const schedule = {
-  //   mon: dailySchedules[0],
-  //   tues: dailySchedules[1],
-  //   wed: dailySchedules[2],
-  //   thurs: dailySchedules[3],
-  //   fri: dailySchedules[4],
-  //   sat: dailySchedules[5],
-  //   sun: dailySchedules[6],
-  // };
-
   const userEmail = req.session.user;
   // find the user that the given user email identifies
   User.findOne({ email: userEmail }).then(
@@ -95,7 +75,6 @@ router.post("/api/opportunities", (req, res) => {
       const newOpportunity = new Opportunity({
         ...req.body,
         poster: foundUser.id,
-        schedule: null,
         status: "IN REVIEW" // new opportunities should be "IN REVIEW"
       });
       newOpportunity.save().then(
