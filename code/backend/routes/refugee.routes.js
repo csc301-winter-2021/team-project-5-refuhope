@@ -97,20 +97,7 @@ router.get("/api/refugees/matches", async (req, res) => {
 
 // add a new refugee to db
 router.post("/api/refugees", (req, res) => {
-  const dailySchedule = {
-    available: false,
-    hours: [],
-  };
-  // create a empty schedule (TODO: task#27) - open to feedback for how schedule should be passed/initialized
-  const refugeeSchedule = {
-    mon: dailySchedule,
-    tues: dailySchedule,
-    wed: dailySchedule,
-    thurs: dailySchedule,
-    fri: dailySchedule,
-    sat: dailySchedule,
-    sun: dailySchedule,
-  };
+
   // create a new refugee assuming req follows schema
   const newRefugee = new Refugee({
     name: req.body.name,
@@ -120,7 +107,7 @@ router.post("/api/refugees", (req, res) => {
     province: req.body.prov,
     additionalInfo: req.body.additionalInfo,
     workType: req.body.workType,
-    schedule: refugeeSchedule,
+    schedule: null,
     numWorkHours: req.body.numWorkHours,
   });
   // save new refugee to DB
