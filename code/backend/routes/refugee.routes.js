@@ -130,7 +130,7 @@ router.post("/api/refugees", (req, res) => {
 });
 
 // update existing refugee information for refugee with id (PATCH for updating existing resource, PUT for creating new resource)
-router.patch("/api/refugees/:id", (req, res) => {
+router.put("/api/refugees/:id", (req, res) => {
   // can add restrictions here to restrict refugee properties are NOT allowed to be modified (assumption to start: all information can be changed)
   const refugeeId = req.params.id;
   // find refugee with unique ID and update with req.body
