@@ -113,15 +113,8 @@ router.post("/api/refugees", (req, res) => {
   };
   // create a new refugee assuming req follows schema
   const newRefugee = new Refugee({
-    name: req.body.name,
-    phone: req.body.phone,
-    email: req.body.email,
-    city: req.body.city,
-    province: req.body.prov,
-    additionalInfo: req.body.additionalInfo,
-    workType: req.body.workType,
+    ...req.body,
     schedule: refugeeSchedule,
-    numWorkHours: req.body.numWorkHours,
   });
   // save new refugee to DB
   newRefugee.save().then(
@@ -131,6 +124,42 @@ router.post("/api/refugees", (req, res) => {
     },
     (error) => {
       // 400 for bad request
+      res.status(400).send({ error });
+    }
+  );
+});
+
+// update existing refugee information for refugee with id (PATCH for updating existing resource, PUT for creating new resource)
+router.put("/api/refugees/:id", (req, res) => {
+  // can add restrictions here to restrict refugee properties are NOT allowed to be modified (assumption to start: all information can be changed)
+  const refugeeId = req.params.id;
+  // find refugee with unique ID and update with req.body
+  Refugee.findByIdAndUpdate(
+    refugeeId,
+    { $set: req.body },
+    { new: true },
+    (err, result) => {
+      if (err) {
+        res.status(400).send({ error: err });
+      } else {
+        res.send({ response: result });
+      }
+    }
+  );
+});
+
+// delete an existing refugee by id from db
+router.delete("/api/refugees/:id", (req, res) => {
+  const refugeeId = req.params.id;
+  if (!ObjectID.isValid(refugeeId)) {
+    return res.status(404).send();
+  }
+
+  Refugee.findByIdAndDelete(refugeeId).then(
+    (deletedRefugee) => {
+      res.send({ response: deletedRefugee });
+    },
+    (error) => {
       res.status(400).send({ error });
     }
   );
