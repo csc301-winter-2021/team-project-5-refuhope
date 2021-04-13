@@ -14,7 +14,7 @@ const getPost = async (props) => {
     if (props.location.postDetails === undefined)
         return null
     const id = props.location.postID
-    const request = new Request(`/api/opportunityByID/${id}`, { method: 'GET' })
+    const request = new Request(`/api/opportunities/${id}`, { method: 'GET' })
     const response = await fetch(request)
 
     if (response.ok) {
@@ -28,7 +28,7 @@ const getPost = async (props) => {
 
 const getRefugees = async () => {
 
-    const request = new Request('/api/refugeeMatches', { method: 'GET' })
+    const request = new Request('/api/refugees/matches', { method: 'GET' })
     const response = await fetch(request)
 
     if (response.ok) {
