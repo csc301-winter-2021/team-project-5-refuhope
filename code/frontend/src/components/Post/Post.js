@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
 import './Post.css'
 
 /**
@@ -75,6 +76,7 @@ const Post = (props) => {
             return (
                 <div className="post-card-btn-tray">
                     <button onClick={() => setBeingEdited(true)}>Edit</button>
+                    <Link to={{pathname: `/match`, state: { postID: props._id}}}>Match</Link>
                 </div>
             )
         }

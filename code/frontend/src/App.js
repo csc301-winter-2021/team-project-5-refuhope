@@ -7,6 +7,7 @@ import Login from './components/Login/Login'
 import SignUp from './components/SignUp/SignUp'
 import HostDash from './components/HostDash/HostDash'
 import VolunteerDash from './components/VolunteerDash/VolunteerDash'
+import Match from './components/Match/Match'
 
 
 const App = () => {
@@ -30,6 +31,10 @@ const App = () => {
           <Route
             exact path ={["/volunteerdash"]}
             render={()=> <VolunteerDash/> }
+          />
+          <Route
+            exact path={["/match"]}
+            render={()=> <Match/> }
           />
         </Switch>
       </BrowserRouter>
