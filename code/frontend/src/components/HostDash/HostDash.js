@@ -34,6 +34,18 @@ const postOpportunity = async (newPost) => {
     return response.ok
 }
 
+const postLogout = async () => {
+
+    const request = new Request('/api/logout',
+        {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', }
+        }
+    )
+    const response = await fetch(request)
+    return response.ok
+}
+
 const HostDash = () => {
 
     /* Setup */
@@ -105,6 +117,7 @@ const HostDash = () => {
             <nav className="hostdash-nav">
                 <p>RefuTalent</p>
                 <button onClick={() => setBeingEdited(true)}>Create New Post</button>
+                <button onClick={() => postLogout()}>Logout</button>
             </nav>
             <div className="hostdash">
                 {renderModal()}
