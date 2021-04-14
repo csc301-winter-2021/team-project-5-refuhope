@@ -6,6 +6,7 @@ const { Opportunity, getModel } = require("../models/opportunity");
 const { User } = require("../models/user");
 const { constructScheduleQuery, processId } = require("./helpers");
 
+// get an opportunity by its ID
 router.get("/api/opportunities/:id", (req, res) => {
   const id = req.params.id;
   // check if id is valid
@@ -62,7 +63,7 @@ router.get("/api/opportunities", (req, res) => {
   );
 });
 
-
+// create a new volunteer opportunity and add to db
 router.post("/api/opportunities", (req, res) => {
   const userEmail = req.session.user;
   // find the user that the given user email identifies
@@ -93,6 +94,7 @@ router.post("/api/opportunities", (req, res) => {
   );
 });
 
+// update existing volunteer opportunity using ID
 router.put("/api/opportunities/:id", async (req, res) => {
   if (!ObjectID.isValid(req.params.id)) {
     return res.status(404).send();
@@ -132,6 +134,7 @@ router.put("/api/opportunities/:id", async (req, res) => {
   }
 });
 
+// delete a volunteer opportunity by ID from db
 router.delete("/api/opportunities/:id", async (req, res) => {
   if (!ObjectID.isValid(req.params.id)) {
     return res.status(404).send();

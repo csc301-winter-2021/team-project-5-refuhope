@@ -40,7 +40,7 @@ router.get("/api/users", (req, res) => {
 });
 
 // get logged in user (this might be useful for calling in frontend when app is reloaded but session/cookie persists)
-router.get("/api/users/loggedIn", (req, res) => {
+router.get("/api/loggedIn", (req, res) => {
   const userEmail = req.session.user;
   // find the user that the given user email identifies
   User.findOne({ email: userEmail }).then(
