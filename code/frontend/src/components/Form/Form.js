@@ -17,7 +17,7 @@ const defaultState = {
     province: "",
     schedule:
         { mon: null, tues: null, wed: null, thurs: null, fri: null, sat: null, sun: null },
-    hours: "",
+    numWorkHours: 0,
     workType: "GROCERIES",
     status: "",
     additionalInfo: "",
@@ -34,7 +34,9 @@ const defaultState = {
  * @param {String} formType     Determines the fields of the work (second) form. 
  *                              Must be "REFUGEE" or "OPPORTUNITY"
  * @param {Object}  init        Initial state for Form. If null, the default state is used instead.
- * @param {Function} save       Callback that is executed when the form is saved. 
+ * @param {Function} save       Callback that is executed when the form is saved. The stateful
+ *                              object formValues is passed as its sole argument; it is up to the 
+ *                              caller to extract the exact set of attributes they require.
  * @param {Function} cancel     Callback that is executed when the cancel button is pressed.
  * 
  * 
@@ -106,39 +108,14 @@ const Form = ({ formType, init, save, cancel }) => {
 
     const saveForm = () => {
 
-        const newObject = {
-            workType: formValues.workType,
-            city: formValues.city,
-            province: formValues.province,
-            schedule: {},
-            numWorkHours: formValues.hours,
-            additionalInfo: formValues.additionalInfo,
-        }
-
         // Remove empty days from schedule.
         DAYS.forEach(day => {
-            if (formValues.schedule[day] !== null) {
-                newObject.schedule[day] = formValues.schedule[day]
+            if (formValues.schedule[day] === null) {
+                delete formValues.schedule[day]
             }
         })
 
-        if (formType === "REFUGEE") {
-            newObject.name = formValues.name
-            newObject.email = formValues.email
-            newObject.phone = formValues.phone
-        } else if (formType === "OPPORTUNITY") {
-            newObject.title = formValues.title
-        }
-
-        if (formValues.workType === "TUTORING") {
-            newObject.subjects = formValues.subject
-            newObject.gradeLevel = formValues.level
-        } else if (formValues.workType === "GROCERIES") {
-            newObject.hasCar = formValues.hasCar
-            newObject.hasPhone = formValues.hasPhone
-        }
-
-        save(newObject)
+        save(formValues)
     }
 
     return (
@@ -246,9 +223,9 @@ const Details = ({ formType, handleEdit, ...props }) => {
 
             <p className="form-label">Work Hours</p>
             <input
-                id="hours"
+                id="numWorkHours"
                 className="form-detail"
-                value={props.hours}
+                value={props.numWorkHours}
                 onChange={e => handleEdit(e.target.id, e.target.value)}
             ></input>
 
