@@ -128,6 +128,60 @@ router.post("/api/users", (req, res) => {
   });
 });
 
+// update user password for currently logged in user
+router.put("/api/changePassword", (req, res) => {
+  const userEmail = req.session.user;
+  const newPassword = req.body.password;
+  const saltRounds = 10;
+  // re-encrypt new user password
+  bcrypt.genSalt(saltRounds, (err, salt) => {
+    bcrypt.hash(newPassword, salt, (error, hash) => {
+      if (error) {
+        res.status(400).send({ error });
+      }
+      const newPassword = hash;
+
+      // update user associated with email with new info
+      User.findOneAndUpdate(
+        { email: userEmail },
+        { $set: { password: newPassword } },
+        { new: true },
+        (err, result) => {
+          if (err) {
+            res.status(400).send({ error: err });
+          } else {
+            res.send({ response: result });
+          }
+        }
+      );
+    });
+  });
+});
+
+// update user information for currently logged in user (not including password)
+router.put("/api/users", (req, res) => {
+  const userEmail = req.session.user;
+  const newUserInfo = req.body;
+  // ensure that password is not included in request
+  if (newUserInfo.password) {
+    delete newUserInfo.password;
+  }
+
+  // update user associated with email with new info
+  User.findOneAndUpdate(
+    { email: userEmail },
+    { $set: newUserInfo },
+    { new: true },
+    (err, result) => {
+      if (err) {
+        res.status(400).send({ error: err });
+      } else {
+        res.send({ response: result });
+      }
+    }
+  );
+});
+
 // delete user by id
 router.delete("/api/users/:id", (req, res) => {
   const userId = req.params.id;
