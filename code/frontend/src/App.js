@@ -31,11 +31,10 @@ const App = () => {
       } 
       else {
         setUser(json.loggedIn)
-        console.log(user.userType === "VOLUNTEER")
       }
     })
     .catch(error => {
-        console.log(user);
+        console.log(error);
     });
   }
   
@@ -54,7 +53,7 @@ const App = () => {
           />
           <Route
             exact path ={["/dash"]}
-            render={() => getSession() && user.userType === "HOST" ? <HostDash/> : user.userType === "VOLUNTEER" ? <VolunteerDash/> : <Login/>}
+            render={() => getSession() && user.userType === "HOST" ? <HostDash user={user}/> : user.userType === "VOLUNTEER" ? <VolunteerDash/> : <Login/>}
           />
         </Switch>
       </BrowserRouter>

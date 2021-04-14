@@ -7,9 +7,9 @@ import './HostDash.css'
 
 /* API Calls. */
 
-const getOpportunities = async () => {
+const getOpportunities = async (poster_id) => {
 
-    const request = new Request('/api/opportunities', { method: 'GET' })
+    const request = new Request(`/api/opportunities?poster=${poster_id}`, { method: 'GET' })
     const response = await fetch(request)
 
     if (response.ok) {
@@ -46,7 +46,7 @@ const postLogout = async () => {
     return response.ok
 }
 
-const HostDash = () => {
+const HostDash = (props) => {
 
     /* Setup */
 
@@ -58,7 +58,7 @@ const HostDash = () => {
 
         // Apparently this IIFE is needed to avoid race conditions in rendering.
         (async () => {
-            const postList = await getOpportunities()
+            const postList = await getOpportunities(props.user._id)
             if (postList === null) {
                 alert("Couldn't load Posts.")
             } else {
