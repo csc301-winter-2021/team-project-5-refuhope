@@ -19,8 +19,8 @@ const REFUGEE_TEMPLATE = {
  * 
  *  @param {Object} props   Expects props to have the following string attributes: name, phone,
  *                          email, location, workType, and additionalInfo. Additionally, props must
- *                          also contain an edit attribute, which is a callback that will be
- *                          executed when the edit button is pressed.                            
+ *                          also contain edit and delete attributes, which are callbacks that will
+ *                          be executed when the edit and delete buttons are pressed respectively.
  */
 const Refugee = (props) => {
 
@@ -42,6 +42,7 @@ const Refugee = (props) => {
         <div className="refugee-card">
             <div className="refugee-card-btn-tray">
                 <button onClick={() => props.edit(props._id)}>Edit</button>
+                <button onClick={() => props.delete(props._id)}>Delete</button>
             </div>
             {createBody()}
         </div>

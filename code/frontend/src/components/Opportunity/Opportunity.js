@@ -18,9 +18,10 @@ const POST_TEMPLATE = {
  *  Component that represents and displays a summarized set of details of a given Opportunity.
  * 
  *  @param {Object} props   Expects props to have the following string attributes: title, status,
- *                          location, workType, numWorkHours, and additionalInfo. Additionally,
- *                          props must contain an edit attribute, which is a callback that will be
- *                          executed when the edit button is pressed.
+ *                          location, workType, numWorkHours, and additionalInfo. Additionally, 
+ *                          props must also contain edit and delete attributes, which are callbacks
+ *                          that will be executed when the edit and delete buttons are pressed
+ *                          respectively.
  */
 const Opportunity = (props) => {
 
@@ -42,6 +43,7 @@ const Opportunity = (props) => {
         <div className="post-card">
             <div className="post-card-btn-tray">
                 <button onClick={() => props.edit(props._id)}>Edit</button>
+                <button onClick={() => props.delete(props._id)}>Delete</button>
             </div>
             {createBody()}
         </div>

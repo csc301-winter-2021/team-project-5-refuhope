@@ -54,6 +54,18 @@ const putOpportunity = async (updatedOpportunity) => {
     return response.ok
 }
 
+const deleteOpportunity = async (id) => {
+
+    const request = new Request(
+        `/api/opportunities/${id}`,
+        {
+            method: 'DELETE'
+        }
+    )
+    const response = await fetch(request)
+    return response.ok
+}
+
 const HostDash = () => {
 
     /* Setup */
@@ -171,6 +183,20 @@ const HostDash = () => {
         setModalContent(null)
     }
 
+    const delOpportunity = (id) => {
+
+        const result = deleteOpportunity(id)
+
+        if (result) {
+            let newOpportunities = [...opportunities]
+            let index = newOpportunities.findIndex(opp => opp._id === id)
+            newOpportunities.splice(index, 1)
+            setOpportunities(newOpportunities)
+        } else {
+            alert("Woops! Couldn't delete Opportunity, please try again!")
+        }
+    }
+
     const cancel = () => {
         setModalContent(null)
     }
@@ -195,6 +221,7 @@ const HostDash = () => {
                             hours={opp.numWorkHours}
                             additionalInfo={opp.additionalInfo}
                             edit={editOpportunity}
+                            delete={delOpportunity}
                         ></Opportunity>
                     )
                 })}

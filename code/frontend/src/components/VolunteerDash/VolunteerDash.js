@@ -54,6 +54,18 @@ const putRefugee = async (updatedRefugee) => {
     return response.ok
 }
 
+const deleteRefugee = async (id) => {
+
+    const request = new Request(
+        `/api/refugees/${id}`,
+        {
+            method: 'DELETE'
+        }
+    )
+    const response = await fetch(request)
+    return response.ok
+}
+
 const RefugeeDash = () => {
 
     /* Setup */
@@ -168,6 +180,20 @@ const RefugeeDash = () => {
         setModalContent(null)
     }
 
+    const delRefugee = (id) => {
+
+        const result = deleteRefugee(id)
+
+        if (result) {
+            let newRefugees = [...refugees]
+            let index = newRefugees.findIndex(ref => ref._id === id)
+            newRefugees.splice(index, 1)
+            setRefugees(newRefugees)
+        } else {
+            alert("Woops! Couldn't delete Refugee, please try again!")
+        }
+    }
+
     const cancel = () => {
         setModalContent(null)
     }
@@ -192,6 +218,7 @@ const RefugeeDash = () => {
                             workType={ref.workType}
                             additionalInfo={ref.additionalInfo}
                             edit={editRefugee}
+                            delete={delRefugee}
                         ></Refugee>
                     )
                 })}
