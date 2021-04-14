@@ -5,7 +5,7 @@ import './Refugee.css'
  * Creates a mapping between the attributes of a Refugee, and labels. Enables us to programatically
  * generate a list of HTML elements. 
  */
-export const REFUGEE_TEMPLATE = {
+const REFUGEE_TEMPLATE = {
     name: "NAME",
     phone: "PHONE",
     email: "EMAIL",
@@ -21,7 +21,6 @@ export const REFUGEE_TEMPLATE = {
  *                          email, location, workType, and additionalInfo. Additionally, props must
  *                          also contain an edit attribute, which is a callback that will be
  *                          executed when the edit button is pressed.                            
- * 
  */
 const Refugee = (props) => {
 
@@ -29,11 +28,11 @@ const Refugee = (props) => {
         // Create a label and Detail component for each attribute of Refugee.
         const details = Object.keys(REFUGEE_TEMPLATE).map(key => {
             return (
-                <Detail
+                <RefugeeDetail
                     key={key}
                     label={REFUGEE_TEMPLATE[key]}
                     value={props[key]}
-                ></Detail >
+                ></RefugeeDetail>
             )
         })
         return details
@@ -49,7 +48,7 @@ const Refugee = (props) => {
     )
 }
 
-export const Detail = (props) => {
+export const RefugeeDetail = (props) => {
 
     const { label, value } = props
 
