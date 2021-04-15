@@ -3,11 +3,11 @@ const router = express.Router();
 
 const { ObjectID } = require("mongodb");
 const { Refugee } = require("../models/refugee");
-const { Opportunity } = require("../models/opportunity");
-const { constructScheduleQuery } = require("./helpers");
+// const { Opportunity } = require("../models/opportunity");
+const { constructScheduleQuery, processId } = require("./helpers");
 
 // get refugee by id
-router.get("/api/refugeeByID/:id", (req, res) => {
+router.get("/api/refugees/:id", (req, res) => {
   const id = req.params.id;
   // check if id is valid
   if (!ObjectID.isValid(id)) {
@@ -27,26 +27,18 @@ router.get("/api/refugeeByID/:id", (req, res) => {
     });
 });
 
-// get refugee with specified name in search
-router.get("/api/refugeeSearch/:name", (req, res) => {
-  const refugeeName = req.params.name;
-  // find one refugee with given name and send bad request on failure
-  Refugee.findOne({ name: refugeeName }).then(
-    (foundRefugee) => {
-      res.send({ response: foundRefugee });
-    },
-    (error) => {
-      res.status(400).send({ error });
-    }
-  );
-});
-
 // get all registered refugees (useful for refugee dashboard page)
-router.get("/api/refugeeSearch", (req, res) => {
+router.get("/api/refugees", (req, res) => {
   // find all refugees registered in db and send bad request on failure
   const { schedule } = req.query;
   const filterQuery = req.query;
   delete filterQuery.schedule;
+
+  try {
+    processId("_id", filterQuery._id, filterQuery);
+  } catch (e) {
+    return res.status(400).send({ error: e.message });
+  }
 
   if (schedule) {
     filterQuery.$or = constructScheduleQuery(schedule);
@@ -61,7 +53,8 @@ router.get("/api/refugeeSearch", (req, res) => {
   );
 });
 
-router.get("/api/refugeeMatches", async (req, res) => {
+// match a refugee with a volunteer opportunity
+router.get("/api/refugees/matches", async (req, res) => {
   const { match } = req.query;
   const filterQuery = req.query;
   delete filterQuery.match;
@@ -103,33 +96,11 @@ router.get("/api/refugeeMatches", async (req, res) => {
   res.send({ response: matchedRefugees });
 });
 
-// add a new refugee to db
-router.post("/api/refugeeAdd", (req, res) => {
-  const dailySchedule = {
-    available: false,
-    hours: [],
-  };
-  // create a empty schedule (TODO: task#27) - open to feedback for how schedule should be passed/initialized
-  const refugeeSchedule = {
-    mon: dailySchedule,
-    tues: dailySchedule,
-    wed: dailySchedule,
-    thurs: dailySchedule,
-    fri: dailySchedule,
-    sat: dailySchedule,
-    sun: dailySchedule,
-  };
+// create and add a new refugee to db
+router.post("/api/refugees", (req, res) => {
   // create a new refugee assuming req follows schema
   const newRefugee = new Refugee({
-    name: req.body.name,
-    phone: req.body.phone,
-    email: req.body.email,
-    city: req.body.city,
-    province: req.body.prov,
-    additionalInfo: req.body.additionalInfo,
-    workType: req.body.workType,
-    schedule: refugeeSchedule,
-    numWorkHours: req.body.numWorkHours,
+    ...req.body
   });
   // save new refugee to DB
   newRefugee.save().then(
@@ -139,6 +110,42 @@ router.post("/api/refugeeAdd", (req, res) => {
     },
     (error) => {
       // 400 for bad request
+      res.status(400).send({ error });
+    }
+  );
+});
+
+// update existing refugee information for refugee with id
+router.put("/api/refugees/:id", (req, res) => {
+  // can add restrictions here to restrict refugee properties are NOT allowed to be modified (assumption to start: all information can be changed)
+  const refugeeId = req.params.id;
+  // find refugee with unique ID and update with req.body
+  Refugee.findByIdAndUpdate(
+    refugeeId,
+    { $set: req.body },
+    { new: true },
+    (err, result) => {
+      if (err) {
+        res.status(400).send({ error: err });
+      } else {
+        res.send({ response: result });
+      }
+    }
+  );
+});
+
+// delete an existing refugee by id from db
+router.delete("/api/refugees/:id", (req, res) => {
+  const refugeeId = req.params.id;
+  if (!ObjectID.isValid(refugeeId)) {
+    return res.status(404).send();
+  }
+
+  Refugee.findByIdAndDelete(refugeeId).then(
+    (deletedRefugee) => {
+      res.send({ response: deletedRefugee });
+    },
+    (error) => {
       res.status(400).send({ error });
     }
   );

@@ -25,7 +25,7 @@ function SignUp() {
             username: account.usern,
             password: account.pwd
         }
-        const request = new Request("/api/userAdd", {
+        const request = new Request("/api/users", {
             method: "post",
             body: JSON.stringify(newUser),
             headers: {
