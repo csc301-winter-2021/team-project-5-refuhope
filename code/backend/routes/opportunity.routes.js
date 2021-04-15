@@ -115,7 +115,7 @@ router.put("/api/opportunities/:id", async (req, res) => {
     }
     // update opportunity only if it is created by current user
     // or it is an admin user
-    if (foundUser.userType == "HOST" && opportunity.poster != foundUser._id) {
+    if (foundUser.userType == "HOST" && !opportunity.poster.equals(foundUser._id)) {
       return res.status(403).send();
     }
     const updatedOpportunity = req.body;
