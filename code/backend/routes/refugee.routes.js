@@ -53,6 +53,7 @@ router.get("/api/refugees", (req, res) => {
   );
 });
 
+// match a refugee with a volunteer opportunity
 router.get("/api/refugees/matches", async (req, res) => {
   const { match } = req.query;
   const filterQuery = req.query;
@@ -95,9 +96,8 @@ router.get("/api/refugees/matches", async (req, res) => {
   res.send({ response: matchedRefugees });
 });
 
-// add a new refugee to db
+// create and add a new refugee to db
 router.post("/api/refugees", (req, res) => {
-
   // create a new refugee assuming req follows schema
   const newRefugee = new Refugee({
     ...req.body
@@ -115,7 +115,7 @@ router.post("/api/refugees", (req, res) => {
   );
 });
 
-// update existing refugee information for refugee with id (PATCH for updating existing resource, PUT for creating new resource)
+// update existing refugee information for refugee with id
 router.put("/api/refugees/:id", (req, res) => {
   // can add restrictions here to restrict refugee properties are NOT allowed to be modified (assumption to start: all information can be changed)
   const refugeeId = req.params.id;
