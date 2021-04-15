@@ -3,6 +3,7 @@ const router = express.Router();
 
 const { ObjectID } = require("mongodb");
 const { Opportunity, getModel } = require("../models/opportunity");
+const { Refugee } = require("../models/refugee");
 const { User } = require("../models/user");
 const { constructScheduleQuery, processId } = require("./helpers");
 
@@ -103,7 +104,7 @@ router.put("/api/opportunities/:id", async (req, res) => {
 
   const userEmail = req.session.user;
   try {
-    const foundUser = User.findOne({ email: userEmail })
+    const foundUser = await User.findOne({ email: userEmail });
     if (!foundUser) {
       return res.status(404).send();
     }
@@ -117,8 +118,12 @@ router.put("/api/opportunities/:id", async (req, res) => {
     if (foundUser.userType == "HOST" && opportunity.poster != foundUser._id) {
       return res.status(403).send();
     }
-    const Model = getModel(req.body.workType || opportunity.workType);
-    Model.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true, runValidators: true },
+    const updatedOpportunity = req.body;
+    delete updatedOpportunity.status;
+    delete updatedOpportunity.matchedRefugee;
+
+    const Model = getModel(updatedOpportunity.workType || opportunity.workType);
+    Model.findByIdAndUpdate(req.params.id, { $set: updatedOpportunity }, { new: true, runValidators: true },
       (err, result) => {
         if (err || !result) {
           res.status(400).send({ error: err || "Failed to update opportunity." });
@@ -134,6 +139,15 @@ router.put("/api/opportunities/:id", async (req, res) => {
   }
 });
 
+
+router.post("/api/opportunities/:id/match/:refugeeId", async (req, res) => {
+  return await updateOpportunityStatus(req, res, "MATCHED");
+});
+
+router.post("/api/opportunities/:id/reject", async (req, res) => {
+  return await updateOpportunityStatus(req, res, "REJECTED");
+});
+
 // delete a volunteer opportunity by ID from db
 router.delete("/api/opportunities/:id", async (req, res) => {
   if (!ObjectID.isValid(req.params.id)) {
@@ -143,7 +157,7 @@ router.delete("/api/opportunities/:id", async (req, res) => {
 
   const userEmail = req.session.user;
   try {
-    const foundUser = User.findOne({ email: userEmail })
+    const foundUser = await User.findOne({ email: userEmail });
     if (!foundUser) {
       return res.status(404).send();
     }
@@ -154,7 +168,7 @@ router.delete("/api/opportunities/:id", async (req, res) => {
     }
     // delete opportunity only if it is created by current user
     // or it is an admin user
-    if (foundUser.userType == "HOST" && opportunity.poster != foundUser._id) {
+    if (foundUser.userType == "HOST" && !foundUser._id.equals(opportunity.poster)) {
       return res.status(403).send();
     }
     await opportunity.remove();
@@ -164,6 +178,63 @@ router.delete("/api/opportunities/:id", async (req, res) => {
     return res.status(400).send({ error });
   }
 });
+
+
+const updateOpportunityStatus = async (req, res, status) => {
+  const opportunityId = req.params.id;
+  const refugeeId = req.params.refugeeId;
+
+  const userEmail = req.session.user;
+  try {
+    // check that current user is an admin
+    const foundUser = await User.findOne({ email: userEmail });
+    if (!foundUser) {
+      return res.status(404).send({ error: "Current user not found." });
+    }
+
+    if (foundUser.userType != "VOLUNTEER") {
+      return res.status(403).send();
+    }
+
+    if (!ObjectID.isValid(opportunityId)) {
+      return res.status(404).send({ error: "Opportunity not found." });
+    }
+
+    const updates = { status };
+    if (status == "MATCHED") {
+      if (!ObjectID.isValid(refugeeId)) {
+        return res.status(404).send({ error: "Refugee not found." });
+      }
+
+      const refugee = await Refugee.findById(refugeeId)
+      if (!refugee) {
+        return res.status(404).send({ error: "Refugee not found." });
+      }
+
+      updates.matchedRefugee = new ObjectID(refugeeId);
+    } else if (status == "REJECTED") {
+      updates.matchedRefugee = null;
+    } else {
+      return res.status(400).send({ error: "Invalid status." });
+    }
+
+    Opportunity.findByIdAndUpdate(opportunityId,
+      { $set: updates },
+      { new: true, runValidators: true },
+      (err, result) => {
+        if (err || !result) {
+          return res.status(400).send({ error: err || "Failed to update status of opportunity." });
+        } else {
+          return res.send({ response: result });
+        }
+      }
+    );
+
+  } catch (error) {
+    return res.status(400).send({ error });
+  }
+}
+
 
 // export the router
 module.exports = router;
