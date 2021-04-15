@@ -1,19 +1,23 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import './Form.css'
 
+// Structure to represnt an interval.
+const interval = { startHour: -1, startMinute: -1, endHour: -1, endMinute: -1 }
+const DAYS = ["mon", "tues", "wed", "thurs", "fri", "sat", "sun"]
 /**
- * Template used to create the initial state of the Form component. It contains ALL the fields
+ * Template used to create the default state of the Form component. It contains ALL the fields
  * necessary to create any combination of Refugee, Opporunity and Grocery, Tutoring.  
  */
-const initialState = {
+const defaultState = {
     name: "",
     email: "",
     phone: "",
     title: "",
     city: "",
     province: "",
-    schedule: [["",""], ["",""], ["", ""], ["", ""], ["", ""], ["", ""], ["", ""]],
-    hours: "",
+    schedule:
+        { mon: null, tues: null, wed: null, thurs: null, fri: null, sat: null, sun: null },
+    numWorkHours: 0,
     workType: "GROCERIES",
     status: "",
     additionalInfo: "",
@@ -29,15 +33,30 @@ const initialState = {
  * 
  * @param {String} formType     Determines the fields of the work (second) form. 
  *                              Must be "REFUGEE" or "OPPORTUNITY"
- * @param {Function} save       Callback that is executed when the form is saved. 
+ * @param {Object}  init        Initial state for Form. If null, the default state is used instead.
+ * @param {Function} save       Callback that is executed when the form is saved. The stateful
+ *                              object formValues is passed as its sole argument; it is up to the 
+ *                              caller to extract the exact set of attributes they require.
  * @param {Function} cancel     Callback that is executed when the cancel button is pressed.
  * 
  * 
  */
-const Form = ({ formType, save, cancel }) => {
+const Form = ({ formType, init, save, cancel }) => {
 
     const [page, setPage] = useState(0)
-    const [formValues, setFormValues] = useState(initialState)
+    // If a not-null initial state is specified, use it. Otherwise, initialize default state.
+    const [formValues, setFormValues] = useState(() => init ? init : defaultState)
+
+    // If the initial state is an object originating from the server, its schedule might not contain
+    // all 7 days
+    useEffect(() => {
+        let keys = Object.keys(formValues.schedule)
+        DAYS.forEach(day => {
+            if (!keys.includes(day)) {
+                formValues.schedule[day] = null
+            }
+        })
+    }, [])
 
     const changePage = (incr) => {
         let newPage = Math.abs(page + incr) % 3
@@ -47,7 +66,7 @@ const Form = ({ formType, save, cancel }) => {
     const renderFormPage = () => {
         if (page === 0) {
             return <Details formType={formType} handleEdit={handleEdit}  {...formValues} />
-        }else if (page === 1) {
+        } else if (page === 1) {
             return <ScheduleDetails formType={formType} handleEdit={handleEdit}  {...formValues} />
         } else if (formValues.workType === "TUTORING") {
             return <TutoringOpportunity handleEdit={handleEdit} {...formValues} />
@@ -57,49 +76,46 @@ const Form = ({ formType, save, cancel }) => {
     }
 
     const handleEdit = (key, value) => {
+
         let updatedInfo = { ...formValues }
+
+        // Modifications to need to be handled carefully.
         if (key.includes("schedule")) {
-            let position = 0
-            if (key.includes("end")) {
-                position = 1
+
+            // Determine which interval has been modified.
+            let position = key.includes("start") ? "start" : "end"
+            let day = key.split("-")[0]
+            let hour = parseInt(value.split(":")[0])
+            let minute = parseInt(value.split(":")[1])
+
+            if (updatedInfo.schedule[day] === null) {
+                updatedInfo.schedule[day] = Object.create(interval)
             }
-            updatedInfo["schedule"][parseInt(key)][position] = value
+
+            if (position === "start") {
+                updatedInfo.schedule[day].startHour = hour
+                updatedInfo.schedule[day].startMinute = minute
+            } else {
+                updatedInfo.schedule[day].endHour = hour
+                updatedInfo.schedule[day].endMinute = minute
+            }
         } else {
             updatedInfo[key] = value
         }
+
         setFormValues(updatedInfo)
     }
 
     const saveForm = () => {
 
-        const newObject = {
-            workType: formValues.workType,
-            city: formValues.city,
-            schedule: formValues.schedule,
-            numWorkHours: formValues.hours,
-            additionalInfo: formValues.additionalInfo,
-        }
+        // Remove empty days from schedule.
+        DAYS.forEach(day => {
+            if (formValues.schedule[day] === null) {
+                delete formValues.schedule[day]
+            }
+        })
 
-        if (formType === "REFUGEE") {
-            newObject.prov = formValues.province
-            newObject.name = formValues.name
-            newObject.email = formValues.email
-            newObject.phone = formValues.phone
-        } else if (formType === "OPPORTUNITY") {
-            newObject.province = formValues.province
-            newObject.title = formValues.title
-        }
-
-        if (formValues.workType === "TUTORING") {
-            newObject.subjects = formValues.subject
-            newObject.gradeLevel = formValues.level
-        } else if (formValues.workType === "GROCERIES") {
-            newObject.hasCar = formValues.hasCar
-            newObject.hasPhone = formValues.hasPhone
-        }
-
-        console.log(newObject)
-        save(newObject)
+        save(formValues)
     }
 
     return (
@@ -207,9 +223,9 @@ const Details = ({ formType, handleEdit, ...props }) => {
 
             <p className="form-label">Work Hours</p>
             <input
-                id="hours"
+                id="numWorkHours"
                 className="form-detail"
-                value={props.hours}
+                value={props.numWorkHours}
                 onChange={e => handleEdit(e.target.id, e.target.value)}
             ></input>
 
@@ -240,20 +256,12 @@ const Details = ({ formType, handleEdit, ...props }) => {
  * Note that these arguments are actually passed in as a combined object, but are de-strucutred
  * within the Details component.
  */
- const ScheduleDetails = ({ formType, handleEdit, ...props }) => {
+const ScheduleDetails = ({ formType, handleEdit, ...props }) => {
     return (
         <div>
             <p className="form-header">Opportunity Schedule</p>
-
             <p className="form-label">Schedule</p>
-            <ScheduleDetail handleEdit={handleEdit} day={"0"}  {...props} />
-            <ScheduleDetail handleEdit={handleEdit} day={"1"}  {...props} />
-            <ScheduleDetail handleEdit={handleEdit} day={"2"}  {...props} />
-            <ScheduleDetail handleEdit={handleEdit} day={"3"}  {...props} />
-            <ScheduleDetail handleEdit={handleEdit} day={"4"}  {...props} />
-            <ScheduleDetail handleEdit={handleEdit} day={"5"}  {...props} />
-            <ScheduleDetail handleEdit={handleEdit} day={"6"}  {...props} />
-
+            {DAYS.map(day => <ScheduleDetail key={day} handleEdit={handleEdit} day={day}  {...props} />)}
         </div>
     )
 }
@@ -270,32 +278,41 @@ const Details = ({ formType, handleEdit, ...props }) => {
  * Note that these arguments are actually passed in as a combined object, but are de-strucutred
  * within the Details component.
  */
- const ScheduleDetail = ({ handleEdit, day, ...props }) => {
-    const week = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"]
-    
+const ScheduleDetail = ({ handleEdit, day, ...props }) => {
+
+    let startHour, startMinute, endHour, endMinute
+
+    if (props.schedule[day] === null) {
+        startHour = startMinute = endHour = endMinute = ""
+    } else {
+        startHour = props.schedule[day].startHour.toString().padStart(2, "0")
+        startMinute = props.schedule[day].startMinute.toString().padStart(2, "0")
+        endHour = props.schedule[day].endHour.toString().padStart(2, "0")
+        endMinute = props.schedule[day].endMinute.toString().padStart(2, "0")
+    }
+
     return (
         <div>
             <div className="form-time-tray">
-                <p> { week[parseInt(day)] } </p>
+                <p> {day.toUpperCase()} </p>
                 {/* Date Start Interval*/}
-                <input 
-                    id={`${day}-schedule-start`} 
+                <input
+                    id={`${day}-schedule-start`}
                     className="form-time"
-                    type="time" 
-                    value={props.schedule[parseInt(day)][0]}
-                    onChange={(e) => handleEdit(e.target.id, e.target.value)}>    
+                    type="time"
+                    value={`${startHour}:${startMinute}`}
+                    onChange={(e) => handleEdit(e.target.id, e.target.value)}>
                 </input>
                 <span> </span>
                 {/* Date End Interval */}
-                <input 
-                    id={`${day}-schedule-end`} 
-                    className="form-time" 
-                    type="time" 
-                    value={props.schedule[parseInt(day)][1]}
+                <input
+                    id={`${day}-schedule-end`}
+                    className="form-time"
+                    type="time"
+                    value={`${endHour}:${endMinute}`}
                     onChange={(e) => handleEdit(e.target.id, e.target.value)}>
                 </input>
             </div>
-
         </div>
     )
 }
