@@ -217,8 +217,10 @@ const HostDash = (props) => {
         <div className="hostdash-container">
             <nav className="hostdash-nav">
                 <p>RefuTalent</p>
-                <button onClick={createNewOpportunity}>Create New Opportunity</button>
-                <button onClick={() => postLogout()}>Logout</button>
+                <div>
+                    <button onClick={createNewOpportunity}>Create New Opportunity</button>
+                    <button onClick={() => postLogout()}>Logout</button>
+                </div>
             </nav>
             <div className="hostdash">
                 {modalContent}

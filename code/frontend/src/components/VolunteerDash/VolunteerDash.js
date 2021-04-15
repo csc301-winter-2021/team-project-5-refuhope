@@ -214,8 +214,10 @@ const RefugeeDash = () => {
         <div className="refugeedash-container">
             <nav className="refugeedash-nav">
                 <p>RefuTalent</p>
-                <button onClick={createNewRefugee}>Create New Refugee</button>
-                <button onClick={() => postLogout()}>Logout</button>
+                <div>
+                    <button onClick={createNewRefugee}>Create New Refugee</button>
+                    <button onClick={() => postLogout()}>Logout</button>
+                </div>
             </nav>
             <div className="refugeedash">
                 {modalContent}

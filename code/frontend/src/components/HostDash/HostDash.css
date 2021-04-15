@@ -29,7 +29,7 @@
     background-color: white;
     color: rgb(110, 110, 110);
     border-radius: 5px;
-    min-width: 25vh;
+    margin-left: 5px;
 }
 
 .hostdash {
