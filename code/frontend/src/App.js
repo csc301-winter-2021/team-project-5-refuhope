@@ -7,6 +7,7 @@ import Login from './components/Login/Login'
 import SignUp from './components/SignUp/SignUp'
 import HostDash from './components/HostDash/HostDash'
 import VolunteerDash from './components/VolunteerDash/VolunteerDash'
+import Match from './components/Match/Match'
 
 const App = () => {
   const [user, setUser] = useState({})
@@ -54,6 +55,10 @@ const App = () => {
           <Route
             exact path ={["/dash"]}
             render={() => getSession() && user.userType === "HOST" ? <HostDash user={user}/> : user.userType === "VOLUNTEER" ? <VolunteerDash/> : <Login/>}
+          />
+          <Route
+            exact path={["/match"]}
+            render={()=> <Match/> }
           />
         </Switch>
       </BrowserRouter>

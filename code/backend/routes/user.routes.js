@@ -128,13 +128,96 @@ router.post("/api/users", (req, res) => {
   });
 });
 
-// delete user by id
-router.delete("/api/users/:id", (req, res) => {
+// update user password for currently logged in user
+router.put("/api/changePassword", (req, res) => {
+  const userEmail = req.session.user;
+  const newPassword = req.body.password;
+  const saltRounds = 10;
+  // re-encrypt new user password
+  bcrypt.genSalt(saltRounds, (err, salt) => {
+    bcrypt.hash(newPassword, salt, (error, hash) => {
+      if (error) {
+        res.status(400).send({ error });
+      }
+      const newPassword = hash;
+
+      // update user associated with email with new info
+      User.findOneAndUpdate(
+        { email: userEmail },
+        { $set: { password: newPassword } },
+        { new: true, runValidators: true },
+        (err, result) => {
+          if (err) {
+            res.status(400).send({ error: err });
+          } else {
+            res.send({ response: result });
+          }
+        }
+      );
+    });
+  });
+});
+
+// update user information for currently logged in user (not including password)
+router.put("/api/users/:email?", async (req, res) => {
+  // if an email is provided in req body use that otherwise update current user in session
+  const userEmail = req.session.user;
+  const paramEmail = req.params.email;
+  const newUserInfo = req.body;
+  // ensure that password is not included in request
+  delete newUserInfo.password;
+
+  // if an email is provided this indicates that a requested update for this particular user
+  if (paramEmail) {
+    const curUser = await User.findOne({ email: userEmail });
+    if (!curUser || curUser.userType == "HOST") {
+      return res.status(403).send({ error: "Unauthorized access by a non-admin user" });
+    }
+    // if cur user is an admin update requested user
+    User.findOneAndUpdate(
+      { email: paramEmail },
+      { $set: newUserInfo },
+      { new: true, runValidators: true },
+      (err, result) => {
+        if (err) {
+          res.status(400).send({ error: err });
+        } else {
+          res.send({ response: result });
+        }
+      }
+    );
+  } else {
+    // otherwise update user in current session
+    User.findOneAndUpdate(
+      { email: userEmail },
+      { $set: newUserInfo },
+      { new: true, runValidators: true },
+      (err, result) => {
+        if (err) {
+          res.status(400).send({ error: err });
+        } else {
+          res.send({ response: result });
+        }
+      }
+    );
+  }
+});
+
+// delete user by id (for admins)
+router.delete("/api/users/:id", async (req, res) => {
   const userId = req.params.id;
-  if (!ObjectID.isValid(userId)) {
+  if (!ObjectID.isValid(userId) || !req.session.user) {
     return res.status(404).send();
   }
 
+  // check if current user is admin
+  const userEmail = req.session.user;
+  const curUser = await User.findOne({ email: userEmail });
+  if (!curUser || curUser.userType == "HOST") {
+    return res.status(403).send({ error: "Unauthorized access by a non-admin user" });
+  }
+
+  // delete user from db
   User.findByIdAndDelete(userId).then(
     (deletedUser) => {
       res.send({ response: deletedUser });

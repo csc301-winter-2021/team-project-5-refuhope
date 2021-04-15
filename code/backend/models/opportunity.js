@@ -104,5 +104,16 @@ const GroceriesOpportunity = Opportunity.discriminator(
   })
 );
 
+const getModel = (workType) => {
+  switch (workType) {
+    case "TUTORING":
+      return TutoringOpportunity;
+    case "GROCERIES":
+      return GroceriesOpportunity;
+    default:
+      throw new Error("Invalid work type.")
+  }
+}
 
-module.exports = { Opportunity, TutoringOpportunity, GroceriesOpportunity, WORK_TYPES, STATUS_TYPES };
+
+module.exports = { Opportunity, TutoringOpportunity, GroceriesOpportunity, getModel, WORK_TYPES, STATUS_TYPES };

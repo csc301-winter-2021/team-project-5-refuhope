@@ -53,6 +53,7 @@ router.get("/api/refugees", (req, res) => {
   );
 });
 
+// match a refugee with a volunteer opportunity
 router.get("/api/refugees/matches", async (req, res) => {
   const { match } = req.query;
   const filterQuery = req.query;
@@ -95,26 +96,11 @@ router.get("/api/refugees/matches", async (req, res) => {
   res.send({ response: matchedRefugees });
 });
 
-// add a new refugee to db
+// create and add a new refugee to db
 router.post("/api/refugees", (req, res) => {
-  const dailySchedule = {
-    available: false,
-    hours: [],
-  };
-  // create a empty schedule (TODO: task#27) - open to feedback for how schedule should be passed/initialized
-  const refugeeSchedule = {
-    mon: dailySchedule,
-    tues: dailySchedule,
-    wed: dailySchedule,
-    thurs: dailySchedule,
-    fri: dailySchedule,
-    sat: dailySchedule,
-    sun: dailySchedule,
-  };
   // create a new refugee assuming req follows schema
   const newRefugee = new Refugee({
-    ...req.body,
-    schedule: refugeeSchedule,
+    ...req.body
   });
   // save new refugee to DB
   newRefugee.save().then(
@@ -129,7 +115,7 @@ router.post("/api/refugees", (req, res) => {
   );
 });
 
-// update existing refugee information for refugee with id (PATCH for updating existing resource, PUT for creating new resource)
+// update existing refugee information for refugee with id
 router.put("/api/refugees/:id", (req, res) => {
   // can add restrictions here to restrict refugee properties are NOT allowed to be modified (assumption to start: all information can be changed)
   const refugeeId = req.params.id;
