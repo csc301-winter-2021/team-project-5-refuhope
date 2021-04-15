@@ -99,7 +99,7 @@ We will be using the MERN stack (React, Express, MongoDB, and Node.js). We will 
  
 For the application’s architecture, we decided to use the Model View Controller (MVC) design pattern. MVC is  the most common architectural pattern used for web applications since each of its high level components, namely Model, View, and Controller, have a natural mapping to the typical frontend, backend, and database components of most modern websites. At a high level, the interactions between the end users and our application can be described by the following diagram
 
-![MVC](../diagrams/mvc.png)
+![MVC](./diagrams/mvc.png)
 
 1. **View → Controller**
 
