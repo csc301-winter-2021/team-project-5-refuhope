@@ -2,7 +2,7 @@ import React from 'react'
 import { useState, useEffect } from 'react'
 
 import Refugee from '../Refugee/Refugee'
-import Post from '../Post/Post'
+import Opportunity from '../Opportunity/Opportunity'
 import './Match.css'
 
 /* API Calls. */
@@ -54,10 +54,10 @@ const Match = (props) => {
         (async () => {             
             const postInfo = await getPost(props)
             if (postInfo === null) {
-                alert("Couldn't load Post.")
+                alert("Couldn't load Opportunity.")
             } else {
                 const postComponent = 
-                        <Post
+                        <Opportunity
                             key={postInfo._id}
                             title={postInfo.title}
                             status={postInfo.status}
@@ -67,7 +67,7 @@ const Match = (props) => {
                             schedule={"WIP"}
                             hours={postInfo.numWorkHours}
                             additionalInfo={postInfo.additionalInfo}
-                        ></Post>
+                        ></Opportunity>
                 setPost(postComponent)
             }
             const refugeeList = await getRefugees()
