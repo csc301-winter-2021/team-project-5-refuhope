@@ -66,6 +66,18 @@ const deleteRefugee = async (id) => {
     return response.ok
 }
 
+const postLogout = async () => {
+
+    const request = new Request('/api/logout',
+        {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', }
+        }
+    )
+    const response = await fetch(request)
+    return response.ok
+}
+
 const RefugeeDash = () => {
 
     /* Setup */
@@ -203,6 +215,7 @@ const RefugeeDash = () => {
             <nav className="refugeedash-nav">
                 <p>RefuTalent</p>
                 <button onClick={createNewRefugee}>Create New Refugee</button>
+                <button onClick={() => postLogout()}>Logout</button>
             </nav>
             <div className="refugeedash">
                 {modalContent}

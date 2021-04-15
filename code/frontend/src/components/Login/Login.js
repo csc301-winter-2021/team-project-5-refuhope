@@ -36,11 +36,8 @@ function Login() {
                 }
             })
             .then(json => {
-                if (json.response.userType === "HOST") {
-                    history.push("/hostdash")
-                }
-                else if (json.response.userType === "VOLUNTEER") {
-                    history.push("/volunteerdash")
+                if (json.response.userType === "HOST" || json.response.userType === "VOLUNTEER") {
+                    history.push("/dash")
                 }
 
             })

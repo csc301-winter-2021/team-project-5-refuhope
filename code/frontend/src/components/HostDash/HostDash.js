@@ -7,9 +7,9 @@ import './HostDash.css'
 
 /* API Calls. */
 
-const getOpportunities = async () => {
+const getOpportunities = async (poster_id) => {
 
-    const request = new Request('/api/opportunities', { method: 'GET' })
+    const request = new Request(`/api/opportunities?poster=${poster_id}`, { method: 'GET' })
     const response = await fetch(request)
 
     if (response.ok) {
@@ -66,7 +66,19 @@ const deleteOpportunity = async (id) => {
     return response.ok
 }
 
-const HostDash = () => {
+const postLogout = async () => {
+
+    const request = new Request('/api/logout',
+        {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', }
+        }
+    )
+    const response = await fetch(request)
+    return response.ok
+}
+
+const HostDash = (props) => {
 
     /* Setup */
 
@@ -78,7 +90,7 @@ const HostDash = () => {
 
         // Apparently this IIFE is needed to avoid race conditions in rendering.
         (async () => {
-            const opportunitiesList = await getOpportunities()
+            const opportunitiesList = await getOpportunities(props.user._id)
             if (opportunitiesList === null) {
                 alert("Couldn't load Posts.")
             } else {
@@ -206,6 +218,7 @@ const HostDash = () => {
             <nav className="hostdash-nav">
                 <p>RefuTalent</p>
                 <button onClick={createNewOpportunity}>Create New Opportunity</button>
+                <button onClick={() => postLogout()}>Logout</button>
             </nav>
             <div className="hostdash">
                 {modalContent}
